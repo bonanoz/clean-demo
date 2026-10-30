@@ -1,4 +1,8 @@
-@import "tailwindcss";
+/* Классы ищем только в src и без тестов: SPEC.md и тест правил движения упоминают
+   запрещённые transition-all и ease-in, Tailwind иначе сгенерировал бы их. */
+@import "tailwindcss" source(".");
+@source not "./**/*.test.{ts,tsx}";
+@source not "./test";
 @import "tw-animate-css";
 @import "shadcn/tailwind.css";
 
@@ -9,6 +13,11 @@
  *
  * Шкала текста — классы type-h1 … type-label, а не text-h1: cn() считает любой
  * text-<что-то> цветом и выкидывает его рядом с text-fog.
+ *
+ * Ширину display-заголовков и абзацев не ограничиваем в ch — ch зависит от гарнитуры
+ * и прыгает при подмене шрифта. Ограничиваем в em.
+ *
+ * Ховеры — только при точном указателе: вариант hover: ниже переопределён.
  */
 
 /* ---------- Шрифты ---------- */
@@ -64,24 +73,46 @@
   unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
 }
 
-/* Фолбэки, чтобы подмена шрифта не двигала вёрстку. Числа посчитаны разово fontkit по файлам
-   из public/fonts и C:/Windows/Fonts (arial.ttf, cour.ttf): size-adjust — отношение средней
-   ширины знака на русском образце текста сайта (кириллица + латиница, default-инстанс wght 400),
-   ascent/descent — hhea (у всех трёх USE_TYPO_METRICS, typo = hhea), делённые на size-adjust. */
+/* Фолбэки, чтобы подмена шрифта не двигала вёрстку. size-adjust — отношение ширины русского
+   образца текста сайта в настоящем шрифте к Arial / Courier New, измерено в Chrome
+   (canvas measureText, с кернингом) отдельно для нужных весов: заголовки 300 (образец —
+   тексты h1 и h2), текст 400, кнопки и меню 500. Перенос строк совпадает не всегда:
+   соотношение ширин у отдельных слов разное. ascent/descent — hhea из woff2 (fontkit; у всех трёх USE_TYPO_METRICS,
+   typo = hhea: Unbounded 995/−245, Geist и Geist Mono 1005/−295 на 1000), делённые на size-adjust. */
 @font-face {
   font-family: "Unbounded Fallback";
+  font-weight: 200 349;
   src: local("Arial"), local("ArialMT");
-  size-adjust: 133.92%;
-  ascent-override: 74.3%;
-  descent-override: 18.29%;
+  size-adjust: 131.42%;
+  ascent-override: 75.71%;
+  descent-override: 18.64%;
+  line-gap-override: 0%;
+}
+@font-face {
+  font-family: "Unbounded Fallback";
+  font-weight: 350 900;
+  src: local("Arial"), local("ArialMT");
+  size-adjust: 133.34%;
+  ascent-override: 74.62%;
+  descent-override: 18.37%;
   line-gap-override: 0%;
 }
 @font-face {
   font-family: "Geist Fallback";
+  font-weight: 100 449;
   src: local("Arial"), local("ArialMT");
-  size-adjust: 104.42%;
-  ascent-override: 96.24%;
-  descent-override: 28.25%;
+  size-adjust: 102.49%;
+  ascent-override: 98.06%;
+  descent-override: 28.78%;
+  line-gap-override: 0%;
+}
+@font-face {
+  font-family: "Geist Fallback";
+  font-weight: 450 900;
+  src: local("Arial"), local("ArialMT");
+  size-adjust: 104.78%;
+  ascent-override: 95.92%;
+  descent-override: 28.15%;
   line-gap-override: 0%;
 }
 @font-face {
@@ -89,7 +120,7 @@
   src: local("Courier New"), local("CourierNewPSMT");
   size-adjust: 99.98%;
   ascent-override: 100.52%;
-  descent-override: 29.5%;
+  descent-override: 29.51%;
   line-gap-override: 0%;
 }
 
@@ -108,6 +139,8 @@
   --sage: #5f7561;
   --sage-deep: #475a4b;
   --sage-bright: #8fa691;
+  /* Текст на --sage только белый (--on-sage): --paper на шалфее даёт 4,49:1, белый — 5:1. */
+  --on-sage: #ffffff;
   /* Ошибки форм: в референсе красного нет, тон подобран под 7:1 на --ink-0. */
   --danger: #f0786b;
 
@@ -182,6 +215,7 @@
   --color-sage: var(--sage);
   --color-sage-deep: var(--sage-deep);
   --color-sage-bright: var(--sage-bright);
+  --color-on-sage: var(--on-sage);
   --color-danger: var(--danger);
 
   --color-background: var(--background);
@@ -211,6 +245,16 @@
   /* transition-colors и прочие без явных значений — тоже на токенах */
   --default-transition-duration: var(--dur-ui);
   --default-transition-timing-function: ease;
+}
+
+/* Тач-экраны «наводят» при тапе и оставляют залипший ховер, поэтому hover: срабатывает
+   только у мыши и тачпада. Касается и компонентов shadcn. */
+@custom-variant hover {
+  @media (hover: hover) and (pointer: fine) {
+    &:hover {
+      @slot;
+    }
+  }
 }
 
 /* ---------- База ---------- */
@@ -261,8 +305,9 @@
     hyphens: auto;
   }
 
+  /* ≈ 60 знаков Geist */
   p {
-    max-inline-size: 60ch;
+    max-inline-size: 40em;
   }
 
   :focus-visible {
@@ -270,14 +315,19 @@
     outline-offset: 2px;
   }
 
+  /* На шалфее --sage-bright не дотягивает до 3:1, кольцо белое. */
+  :where(.bg-sage, .bg-sage-deep) :focus-visible {
+    outline-color: var(--on-sage);
+  }
+
   /* Цель ссылки «К содержимому» получает фокус программно, рамка ей не нужна. */
-  [tabindex="-1"]:focus {
+  #main:focus {
     outline: none;
   }
 
   ::selection {
     background-color: var(--sage);
-    color: var(--paper);
+    color: var(--on-sage);
   }
 }
 
@@ -316,7 +366,7 @@
   font-family: var(--font-sans);
   font-size: var(--text-lead);
   line-height: 1.5;
-  max-inline-size: 46ch;
+  max-inline-size: 30em; /* ≈ 46 знаков */
 }
 @utility type-body {
   font-family: var(--font-sans);
@@ -394,7 +444,7 @@
 @utility btn-primary {
   background-color: var(--paper);
   color: var(--ink-0);
-  @media (hover: hover) {
+  @media (hover: hover) and (pointer: fine) {
     &:hover {
       background-color: color-mix(in oklab, var(--paper), var(--fog));
     }
@@ -404,7 +454,7 @@
   background-color: var(--ink-2);
   border-color: var(--line);
   color: var(--paper);
-  @media (hover: hover) {
+  @media (hover: hover) and (pointer: fine) {
     &:hover {
       background-color: var(--ink-3);
     }
@@ -508,7 +558,9 @@
     translate: 0 16px;
   }
 
+  /* Видимое состояние задано явно: переход из inset() в none браузер не анимирует. */
   [data-reveal="clip"] {
+    clip-path: inset(0);
     transition: clip-path var(--dur-clip) var(--ease-in-out);
   }
   [data-reveal="clip"]:not([data-visible]) {

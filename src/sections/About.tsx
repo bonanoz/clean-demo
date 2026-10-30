@@ -13,8 +13,8 @@ export function About() {
           <MonoLabel>[01] / ХИМИЯ И ОБОРУДОВАНИЕ</MonoLabel>
           <h3 className="type-h3">{typo('Профессиональная химия и оборудование')}</h3>
         </NotchCard>
-        <NotchCard notch="top-left" className="hover-lift flex min-h-72 flex-col justify-between gap-6 bg-sage p-6 pt-12">
-          <MonoLabel className="text-paper">[02] / ЛАК</MonoLabel>
+        <NotchCard notch="top-left" className="hover-lift flex min-h-72 flex-col justify-between gap-6 bg-sage p-6 pt-12 text-on-sage">
+          <MonoLabel className="text-on-sage">[02] / ЛАК</MonoLabel>
           <h3 className="type-h3">{typo('Безопасно для лака')}</h3>
         </NotchCard>
       </div>

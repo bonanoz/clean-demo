@@ -1,4 +1,4 @@
-import type { ElementType, HTMLAttributes } from 'react'
+import { useLayoutEffect, useState, type ElementType, type HTMLAttributes } from 'react'
 import { useInView } from '@/lib/use-in-view'
 
 type RevealProps = HTMLAttributes<HTMLElement> & {
@@ -15,7 +15,16 @@ type RevealProps = HTMLAttributes<HTMLElement> & {
  */
 export function Reveal({ as = 'div', variant = 'up', index = 0, style, children, ...rest }: RevealProps) {
   const Tag = as as 'div'
-  const [ref, visible] = useInView<HTMLDivElement>({ rootMargin: '0px 0px -10% 0px' })
+  // Отступ −10% снизу: появление начинается, когда элемент поднялся над нижней десятой экрана.
+  // Элемент в последней десятой экрана у конца документа туда не поднимется — ему отступ не нужен.
+  const [rootMargin, setRootMargin] = useState('0px 0px -10% 0px')
+  const [ref, visible] = useInView<HTMLDivElement>({ rootMargin })
+  useLayoutEffect(() => {
+    const el = ref.current
+    if (!el) return
+    const top = el.getBoundingClientRect().top + window.scrollY
+    if (top > document.documentElement.scrollHeight - window.innerHeight * 0.1) setRootMargin('0px')
+  }, [ref])
   return (
     <Tag
       ref={ref}

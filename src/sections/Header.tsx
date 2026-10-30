@@ -95,7 +95,7 @@ export function Header() {
           <div className="flex items-center gap-2 justify-self-end">
             <a
               href={site.phoneHref}
-              className="type-ui hidden items-center gap-2 px-3 whitespace-nowrap text-fog tabular-nums transition-colors hover:text-paper xl:flex"
+              className="type-ui hidden items-center gap-2 px-3 whitespace-nowrap text-fog tabular-nums lining-nums transition-colors hover:text-paper xl:flex"
             >
               <Phone aria-hidden="true" className="size-4" strokeWidth={1.75} />
               {site.phone}
@@ -126,7 +126,7 @@ export function Header() {
           id="mobile-menu"
           data-state={open ? 'open' : 'closed'}
           inert={!open}
-          className="absolute inset-x-0 top-full border-b border-line bg-ink-0 transition-[opacity,translate] duration-(--dur-ui) ease-out motion-reduce:transition-[opacity] data-[state=closed]:pointer-events-none data-[state=closed]:opacity-0 motion-safe:data-[state=closed]:-translate-y-2 lg:hidden"
+          className="absolute inset-x-0 top-full max-h-[calc(100dvh-var(--header-h))] overflow-y-auto overscroll-contain border-b border-line bg-ink-0 transition-[opacity,translate] duration-(--dur-ui) ease-out motion-reduce:transition-[opacity] data-[state=closed]:pointer-events-none data-[state=closed]:opacity-0 motion-safe:data-[state=closed]:-translate-y-2 lg:hidden"
         >
           <nav aria-label="Меню" className="shell py-4">
             <ul className="flex flex-col">
@@ -146,7 +146,7 @@ export function Header() {
             <div className="mt-4 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
               <a
                 href={site.phoneHref}
-                className="type-ui flex min-h-11 items-center gap-2 whitespace-nowrap text-paper tabular-nums"
+                className="type-ui flex min-h-11 items-center gap-2 whitespace-nowrap text-paper tabular-nums lining-nums"
                 onClick={() => setOpen(false)}
               >
                 <Phone aria-hidden="true" className="size-4 text-sage-bright" strokeWidth={1.75} />

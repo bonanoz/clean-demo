@@ -21,7 +21,9 @@ export function SplitWords({ as: Tag = 'h2', text, className, id }: SplitWordsPr
         <Fragment key={i}>
           {i > 0 && ' '}
           <span className="split-word">
-            <span style={i > 0 ? { transitionDelay: `calc(var(--stagger-words) * ${i})` } : undefined}>{word}</span>
+            <span style={Tag === 'h1' && i > 0 ? { transitionDelay: `calc(var(--stagger-words) * ${i})` } : undefined}>
+              {word}
+            </span>
           </span>
         </Fragment>
       ))}

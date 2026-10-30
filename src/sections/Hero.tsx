@@ -7,7 +7,7 @@ export function Hero() {
   return (
     <section id="hero" aria-labelledby="hero-title" className="shell pt-8 pb-(--section-y)">
       <MonoLabel>[CLEAN.CARS] / МОЙКА И ДЕТЕЙЛИНГ</MonoLabel>
-      <SplitWords as="h1" id="hero-title" text="Вернём машине заводской блеск" className="type-h1 mt-4 max-w-[14ch]" />
+      <SplitWords as="h1" id="hero-title" text="Вернём машине заводской блеск" className="type-h1 mt-4 max-w-[12.5em]" />
       <div className="hover-zoom mt-8 aspect-[16/10] overflow-hidden rounded-card lg:w-[58vw]">
         <Photo
           name="hero-main"
