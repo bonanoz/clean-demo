@@ -1,0 +1,2 @@
+# сгенерированные таблицы cn: при merge берём свою версию, потом пересобираем (npx cn build)
+src/lib/cn-tables.ts merge=ours linguist-generated

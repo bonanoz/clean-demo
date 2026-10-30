@@ -3,6 +3,7 @@
 @import "tailwindcss" source(".");
 @source not "./**/*.test.{ts,tsx}";
 @source not "./test";
+@source not "./lib/cn-tables.ts";
 @import "tw-animate-css";
 @import "shadcn/tailwind.css";
 
