@@ -7,10 +7,12 @@ import { SectionHeading } from '@/components/kit/SectionHeading'
 import { carClasses, services } from '@/data/services'
 import { dateBounds, timeSlots, validateBooking, type BookingErrors, type BookingValues } from '@/lib/booking'
 import { typo } from '@/lib/typo'
+import { cn } from '@/lib/utils'
 
+// Табличные цифры: телефон, дата и время не прыгают по ширине при вводе.
 const control =
-  'type-body w-full rounded-lg border border-line bg-ink-1 px-4 text-paper scheme-dark placeholder:text-fog-dim aria-invalid:border-danger'
-const input = `${control} h-12`
+  'type-body w-full rounded-lg border border-line bg-ink-1 px-4 text-paper tabular-nums lining-nums scheme-dark placeholder:text-fog-dim aria-invalid:border-danger'
+const input = cn(control, 'h-12')
 
 const dayMonth = new Intl.DateTimeFormat('ru-RU', { day: 'numeric', month: 'long' })
 
@@ -20,7 +22,7 @@ type SelectProps = { id: string; name: string; placeholder: string; options: rea
 function Select({ id, name, placeholder, options, ...aria }: SelectProps) {
   return (
     <div className="relative">
-      <select id={id} name={name} defaultValue="" className={`${input} appearance-none pr-11`} {...aria}>
+      <select id={id} name={name} defaultValue="" className={cn(input, 'appearance-none pr-11')} {...aria}>
         <option value="">{typo(placeholder)}</option>
         {options.map((option) => (
           <option key={option.value} value={option.value}>
@@ -35,7 +37,7 @@ function Select({ id, name, placeholder, options, ...aria }: SelectProps) {
 
 function Field({ name, label, error, className, children }: { name: string; label: ReactNode; error?: string; className?: string; children: ReactNode }) {
   return (
-    <div className={`flex flex-col gap-2 ${className ?? ''}`}>
+    <div className={cn('flex flex-col gap-2', className)}>
       <label htmlFor={`booking-${name}`} className="type-small text-fog">
         {label}
       </label>
@@ -64,9 +66,11 @@ export function Booking() {
 
   const { min, max } = dateBounds(new Date())
 
-  // Состояние поля, на которое ссылается подпись ошибки: атрибуты есть только у поля с ошибкой.
-  const aria = (name: keyof BookingValues) =>
-    errors[name] ? ({ 'aria-invalid': true, 'aria-describedby': `booking-${name}-error` } as const) : {}
+  // aria-required — у всех полей, кроме комментария; aria-invalid и ссылка на текст ошибки — только у поля с ошибкой.
+  const aria = (name: keyof BookingValues) => ({
+    ...(name !== 'comment' && ({ 'aria-required': true } as const)),
+    ...(errors[name] && ({ 'aria-invalid': true, 'aria-describedby': `booking-${name}-error` } as const)),
+  })
 
   // Ошибка исчезает, как только поле начали править; новая проверка — только при отправке.
   const clearError = (event: FormEvent<HTMLFormElement>) => {
@@ -117,39 +121,45 @@ export function Booking() {
       <div className="grid gap-10 lg:grid-cols-[minmax(0,1fr)_minmax(0,0.8fr)] lg:gap-16">
         <div className="flex flex-col gap-8">
           <SectionHeading id="booking-title" label="[ЗАПИСЬ]" title="Запишитесь на мойку сегодня" />
-          <p className="type-lead text-fog">
-            {typo(`Выберите услугу, дату и время: слоты каждый час с ${timeSlots[0]} до ${timeSlots.at(-1)}.`)}
-          </p>
+          {!sent && (
+            <p className="type-lead tabular-nums lining-nums text-fog">
+              {typo(`Выберите услугу, дату и время: слоты каждый час с ${timeSlots[0]} до ${timeSlots.at(-1)}.`)}
+            </p>
+          )}
 
-          {sent ? (
-            <div
-              ref={statusRef}
-              role="status"
-              tabIndex={-1}
-              // Подтверждение появляется за 250 мс (1,25 × --dur-ui); при reduce — только прозрачность за --dur-ui.
-              className="flex flex-col gap-6 rounded-card border border-line bg-ink-2 p-6 outline-none transition-[opacity,translate] duration-[calc(var(--dur-ui)*1.25)] ease-out starting:opacity-0 motion-safe:starting:translate-y-2 motion-reduce:transition-[opacity] motion-reduce:duration-(--dur-ui) sm:p-8"
-            >
-              <h3 className="type-h3">{typo('Заявка принята')}</h3>
-              <dl className="grid gap-5 sm:grid-cols-2">
-                <div className="flex flex-col gap-1 sm:col-span-2">
-                  <dt className="type-label text-fog-dim">Услуга</dt>
-                  <dd className="type-body">{typo(sent.service)}</dd>
-                </div>
-                <div className="flex flex-col gap-1">
-                  <dt className="type-label text-fog-dim">Дата</dt>
-                  <dd className="type-price">{typo(sent.date)}</dd>
-                </div>
-                <div className="flex flex-col gap-1">
-                  <dt className="type-label text-fog-dim">Время</dt>
-                  <dd className="type-price">{sent.time}</dd>
-                </div>
-              </dl>
-              <button type="button" onClick={again} className="btn btn-secondary self-start">
-                {typo('Записаться ещё раз')}
-              </button>
-            </div>
-          ) : (
-            <Reveal>
+          {/* Reveal над обоими состояниями: «Записаться ещё раз» не должен заново скрывать и 700 мс проявлять форму. */}
+          <Reveal>
+            {sent ? (
+              <div
+                ref={statusRef}
+                role="status"
+                aria-labelledby="booking-sent-title"
+                tabIndex={-1}
+                // Подтверждение появляется за 250 мс (1,25 × --dur-ui); при reduce — только прозрачность за --dur-ui.
+                className="flex flex-col gap-6 rounded-card border border-line bg-ink-2 p-6 outline-none transition-[opacity,translate] duration-[calc(var(--dur-ui)*1.25)] ease-out starting:opacity-0 motion-safe:starting:translate-y-2 motion-reduce:transition-[opacity] motion-reduce:duration-(--dur-ui) sm:p-8"
+              >
+                <h3 id="booking-sent-title" className="type-h3">
+                  {typo('Заявка принята')}
+                </h3>
+                <dl className="grid gap-5 sm:grid-cols-2">
+                  <div className="flex flex-col gap-1 sm:col-span-2">
+                    <dt className="type-label text-fog-dim">Услуга</dt>
+                    <dd className="type-body">{typo(sent.service)}</dd>
+                  </div>
+                  <div className="flex flex-col gap-1">
+                    <dt className="type-label text-fog-dim">Дата</dt>
+                    <dd className="type-price">{typo(sent.date)}</dd>
+                  </div>
+                  <div className="flex flex-col gap-1">
+                    <dt className="type-label text-fog-dim">Время</dt>
+                    <dd className="type-price">{sent.time}</dd>
+                  </div>
+                </dl>
+                <button type="button" onClick={again} className="btn btn-secondary self-start">
+                  {typo('Записаться ещё раз')}
+                </button>
+              </div>
+            ) : (
               <form
                 noValidate
                 onSubmit={onSubmit}
@@ -220,7 +230,7 @@ export function Booking() {
                   error={errors.comment}
                   className="sm:col-span-2"
                 >
-                  <textarea id="booking-comment" name="comment" rows={3} className={`${control} min-h-28 resize-y py-3`} {...aria('comment')} />
+                  <textarea id="booking-comment" name="comment" rows={3} className={cn(control, 'min-h-28 resize-y py-3')} {...aria('comment')} />
                 </Field>
 
                 <div className="flex flex-col gap-2 sm:col-span-2">
@@ -250,8 +260,8 @@ export function Booking() {
                   Записаться
                 </button>
               </form>
-            </Reveal>
-          )}
+            )}
+          </Reveal>
         </div>
 
         {/* Клип на обёртке, параллакс на img: так их keyframes и переходы не спорят. */}

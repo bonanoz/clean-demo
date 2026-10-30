@@ -36,7 +36,7 @@ export function Footer() {
             </div>
             <address className="flex flex-col gap-3 not-italic">
               <MonoLabel>[АДРЕС И ЧАСЫ]</MonoLabel>
-              <p className="type-body text-fog">
+              <p className="type-body tabular-nums lining-nums text-fog">
                 {typo(site.address)}
                 <br />
                 {typo(site.hours)}
@@ -52,7 +52,7 @@ export function Footer() {
                       <a
                         href={href}
                         aria-label={label}
-                        className="press grid size-12 place-items-center rounded-xl bg-ink-3 text-fog transition-colors hover:text-paper"
+                        className="grid size-12 place-items-center rounded-xl bg-ink-3 text-fog transition-colors hover:text-paper"
                       >
                         <Icon aria-hidden="true" className="size-5" strokeWidth={1.75} />
                       </a>
@@ -68,7 +68,7 @@ export function Footer() {
             <div className="grid grid-cols-3 gap-px overflow-hidden rounded-card border border-line bg-line">
               {columns.map(({ title, hrefs }) => (
                 <div key={title} className="bg-ink-2">
-                  <h3 className="type-label border-b border-line bg-ink-3 px-3 py-3 text-paper sm:px-4">{typo(title)}</h3>
+                  <p className="type-label border-b border-line bg-ink-3 px-3 py-3 text-paper sm:px-4">{typo(title)}</p>
                   <ul>
                     {hrefs.map((href) => (
                       <li key={href} className="border-b border-line last:border-b-0">
