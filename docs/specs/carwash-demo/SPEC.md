@@ -270,7 +270,7 @@ export const serviceGroups = [
 | ID | Эпик | Волна | Зависит от | Зона файлов | Модель | Статус | Ветка |
 |---|---|---|---|---|---|---|---|
 | E0 | Каркас, тестовый раннер, шрифты | 0 | — | `package.json`, конфиги, `src/main.tsx`, `src/test/setup.ts`, `src/lib/utils.ts`, `src/components/ui/*`, `public/fonts/*` | оркестратор | done | feat/carwash-demo |
-| E1 | Дизайн-система, типографика, примитивы движения, шапка, сборка страницы | 1 | E0 | `index.html`, `src/index.css`, `src/App.tsx`, `src/lib/{format,typo,use-in-view}.ts`, `src/data/{site,services}.ts`, `src/components/kit/*`, `public/favicon.svg`, `src/sections/Header.tsx`, заглушки остальных `src/sections/*.tsx` | opus | todo | |
+| E1 | Дизайн-система, типографика, примитивы движения, шапка, сборка страницы | 1 | E0 | `index.html`, `src/index.css`, `src/App.tsx`, `src/lib/{format,typo,use-in-view}.ts`, `src/data/{site,services}.ts`, `src/components/kit/*`, `public/favicon.svg`, `src/sections/Header.tsx`, заглушки остальных `src/sections/*.tsx` | opus | in_progress | |
 | E2 | Фото с Unsplash, AVIF/WebP, манифест | 1 | E0 | `public/images/*`, `src/data/images.ts`, `docs/CREDITS.md` | оркестратор (браузер и отбор глазами) | done | feat/carwash-demo |
 | E3 | Hero и «О нас» | 2 | E1, E2 | `src/sections/Hero.tsx`, `src/sections/About.tsx` | sonnet | todo | |
 | E4 | Услуги и калькулятор | 2 | E1, E2 | `src/sections/Services.tsx`, `src/sections/Calculator.tsx`, `src/lib/price.ts` | sonnet | todo | |
