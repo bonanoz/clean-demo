@@ -1,3 +1,616 @@
-@import "tailwindcss";
+/* Классы ищем только в src и без тестов: SPEC.md и тест правил движения упоминают
+   запрещённые transition-all и ease-in, Tailwind иначе сгенерировал бы их. */
+@import "tailwindcss" source(".");
+@source not "./**/*.test.{ts,tsx}";
+@source not "./test";
 @import "tw-animate-css";
 @import "shadcn/tailwind.css";
+
+/*
+ * Дизайн-система clean.cars. Цвета, шрифты, шкала, радиусы, кривые и длительности живут
+ * только здесь; секции берут их утилитами (bg-ink-2, text-fog, type-h2, rounded-card)
+ * или через var(--…).
+ *
+ * Шкала текста — классы type-h1 … type-label, а не text-h1: cn() считает любой
+ * text-<что-то> цветом и выкидывает его рядом с text-fog.
+ *
+ * Ширину display-заголовков и абзацев не ограничиваем в ch — ch зависит от гарнитуры
+ * и прыгает при подмене шрифта. Ограничиваем в em.
+ *
+ * Ховеры — только при точном указателе: вариант hover: ниже переопределён.
+ */
+
+/* ---------- Шрифты ---------- */
+
+/* Вариативные woff2 из Fontsource, unicode-range оттуда же. ₽ (U+20BD) нет ни в одном
+   подмножестве Geist и Geist Mono, поэтому знак рисуется фолбэком (Arial / Courier New). */
+@font-face {
+  font-family: "Unbounded";
+  font-style: normal;
+  font-weight: 200 900;
+  font-display: swap;
+  src: url("/fonts/unbounded-cyrillic-wght.woff2") format("woff2");
+  unicode-range: U+0301, U+0400-045F, U+0490-0491, U+04B0-04B1, U+2116;
+}
+@font-face {
+  font-family: "Unbounded";
+  font-style: normal;
+  font-weight: 200 900;
+  font-display: swap;
+  src: url("/fonts/unbounded-latin-wght.woff2") format("woff2");
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+@font-face {
+  font-family: "Geist";
+  font-style: normal;
+  font-weight: 100 900;
+  font-display: swap;
+  src: url("/fonts/geist-cyrillic-wght.woff2") format("woff2");
+  unicode-range: U+0301, U+0400-045F, U+0490-0491, U+04B0-04B1, U+2116;
+}
+@font-face {
+  font-family: "Geist";
+  font-style: normal;
+  font-weight: 100 900;
+  font-display: swap;
+  src: url("/fonts/geist-latin-wght.woff2") format("woff2");
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+@font-face {
+  font-family: "Geist Mono";
+  font-style: normal;
+  font-weight: 100 900;
+  font-display: swap;
+  src: url("/fonts/geist-mono-cyrillic-wght.woff2") format("woff2");
+  unicode-range: U+0301, U+0400-045F, U+0490-0491, U+04B0-04B1, U+2116;
+}
+@font-face {
+  font-family: "Geist Mono";
+  font-style: normal;
+  font-weight: 100 900;
+  font-display: swap;
+  src: url("/fonts/geist-mono-latin-wght.woff2") format("woff2");
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+
+/* Фолбэки, чтобы подмена шрифта не двигала вёрстку. size-adjust — отношение ширины русского
+   образца текста сайта в настоящем шрифте к Arial / Courier New, измерено в Chrome
+   (canvas measureText, с кернингом) отдельно для нужных весов: заголовки 300 (образец —
+   тексты h1 и h2), текст 400, кнопки и меню 500. Перенос строк совпадает не всегда:
+   соотношение ширин у отдельных слов разное. ascent/descent — hhea из woff2 (fontkit; у всех трёх USE_TYPO_METRICS,
+   typo = hhea: Unbounded 995/−245, Geist и Geist Mono 1005/−295 на 1000), делённые на size-adjust. */
+@font-face {
+  font-family: "Unbounded Fallback";
+  font-weight: 200 349;
+  src: local("Arial"), local("ArialMT");
+  size-adjust: 131.42%;
+  ascent-override: 75.71%;
+  descent-override: 18.64%;
+  line-gap-override: 0%;
+}
+@font-face {
+  font-family: "Unbounded Fallback";
+  font-weight: 350 900;
+  src: local("Arial"), local("ArialMT");
+  size-adjust: 133.34%;
+  ascent-override: 74.62%;
+  descent-override: 18.37%;
+  line-gap-override: 0%;
+}
+@font-face {
+  font-family: "Geist Fallback";
+  font-weight: 100 449;
+  src: local("Arial"), local("ArialMT");
+  size-adjust: 102.49%;
+  ascent-override: 98.06%;
+  descent-override: 28.78%;
+  line-gap-override: 0%;
+}
+@font-face {
+  font-family: "Geist Fallback";
+  font-weight: 450 900;
+  src: local("Arial"), local("ArialMT");
+  size-adjust: 104.78%;
+  ascent-override: 95.92%;
+  descent-override: 28.15%;
+  line-gap-override: 0%;
+}
+@font-face {
+  font-family: "Geist Mono Fallback";
+  src: local("Courier New"), local("CourierNewPSMT");
+  size-adjust: 99.98%;
+  ascent-override: 100.52%;
+  descent-override: 29.51%;
+  line-gap-override: 0%;
+}
+
+/* ---------- Токены ---------- */
+
+:root {
+  /* Палитра снята с референса; шалфей затемнён до 5:1 с белым текстом. */
+  --ink-0: #050505;
+  --ink-1: #0d0f0e;
+  --ink-2: #131412;
+  --ink-3: #1d1f1c;
+  --line: #2d2e2c;
+  --paper: #f2f3f1;
+  --fog: #b3b8b5;
+  --fog-dim: #8a8f8c;
+  --sage: #5f7561;
+  --sage-deep: #475a4b;
+  --sage-bright: #8fa691;
+  /* Текст на --sage только белый (--on-sage): --paper на шалфее даёт 4,49:1, белый — 5:1. */
+  --on-sage: #ffffff;
+  /* Ошибки форм: в референсе красного нет, тон подобран под 7:1 на --ink-0. */
+  --danger: #f0786b;
+
+  /* Шкала: плавно между 360 и 1440 px. Межстрочный, трекинг и вес — в утилитах type-*. */
+  --text-h1: clamp(2.125rem, 1.4rem + 3.4vw, 4.5rem);
+  --text-h2: clamp(1.75rem, 1.3rem + 2vw, 3.25rem);
+  --text-h3: clamp(1.25rem, 1.1rem + 0.6vw, 1.625rem);
+  --text-price: clamp(1.5rem, 1.25rem + 1vw, 2.25rem);
+  --text-lead: clamp(1.0625rem, 1rem + 0.3vw, 1.25rem);
+  --text-body: clamp(1rem, 0.96rem + 0.18vw, 1.0625rem);
+  --text-small: 0.875rem;
+  --text-label: 0.75rem;
+  --text-ui: 0.9375rem; /* кнопки и пункты меню, 15 px */
+
+  /* Ритм: отступы секций, поля страницы, шаг внутри — 8 px (p-2, gap-4 …). */
+  --section-y: clamp(4rem, 3rem + 5vw, 8rem);
+  --shell-max: 90rem;
+  --gutter: clamp(1rem, 0.6rem + 1.8vw, 2.5rem);
+  --header-h: 4rem;
+
+  /* Движение. Кривые — в @theme ниже (утилиты ease-out, ease-in-out, ease-drawer). */
+  --dur-press: 160ms; /* нажатие */
+  --dur-ui: 200ms; /* меню, ховеры, смена значения */
+  --dur-reveal: 700ms; /* маркетинговое появление при прокрутке */
+  --dur-clip: 900ms; /* раскрытие крупного фото маской */
+  --stagger: 50ms; /* шаг каскада, 30–80 ms */
+  --stagger-words: 40ms; /* шаг слов h1 */
+
+  /* shadcn */
+  --radius: 0.5rem;
+  --background: var(--ink-0);
+  --foreground: var(--paper);
+  --card: var(--ink-2);
+  --card-foreground: var(--paper);
+  --popover: var(--ink-2);
+  --popover-foreground: var(--paper);
+  --primary: var(--paper);
+  --primary-foreground: var(--ink-0);
+  --secondary: var(--ink-3);
+  --secondary-foreground: var(--paper);
+  --muted: var(--ink-3);
+  --muted-foreground: var(--fog);
+  --accent: var(--ink-3);
+  --accent-foreground: var(--paper);
+  --destructive: var(--danger);
+  --border: var(--line);
+  --input: var(--line);
+  --ring: var(--sage-bright);
+}
+
+@theme {
+  --font-display: "Unbounded", "Unbounded Fallback", ui-sans-serif, sans-serif;
+  --font-sans: "Geist", "Geist Fallback", ui-sans-serif, system-ui, sans-serif;
+  --font-mono: "Geist Mono", "Geist Mono Fallback", ui-monospace, monospace;
+
+  --ease-out: cubic-bezier(0.23, 1, 0.32, 1);
+  --ease-in-out: cubic-bezier(0.77, 0, 0.175, 1);
+  --ease-drawer: cubic-bezier(0.32, 0.72, 0, 1);
+
+  --radius-card: 1.375rem;
+}
+
+@theme inline {
+  --color-ink-0: var(--ink-0);
+  --color-ink-1: var(--ink-1);
+  --color-ink-2: var(--ink-2);
+  --color-ink-3: var(--ink-3);
+  --color-line: var(--line);
+  --color-paper: var(--paper);
+  --color-fog: var(--fog);
+  --color-fog-dim: var(--fog-dim);
+  --color-sage: var(--sage);
+  --color-sage-deep: var(--sage-deep);
+  --color-sage-bright: var(--sage-bright);
+  --color-on-sage: var(--on-sage);
+  --color-danger: var(--danger);
+
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-popover: var(--popover);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-destructive: var(--destructive);
+  --color-border: var(--border);
+  --color-input: var(--input);
+  --color-ring: var(--ring);
+
+  --radius-sm: calc(var(--radius) - 4px);
+  --radius-md: calc(var(--radius) - 2px);
+  --radius-lg: var(--radius);
+  --radius-xl: calc(var(--radius) + 4px);
+
+  /* transition-colors и прочие без явных значений — тоже на токенах */
+  --default-transition-duration: var(--dur-ui);
+  --default-transition-timing-function: ease;
+}
+
+/* Тач-экраны «наводят» при тапе и оставляют залипший ховер, поэтому hover: срабатывает
+   только у мыши и тачпада. Касается и компонентов shadcn. */
+@custom-variant hover {
+  @media (hover: hover) and (pointer: fine) {
+    &:hover {
+      @slot;
+    }
+  }
+}
+
+/* ---------- База ---------- */
+
+@layer base {
+  * {
+    border-color: var(--line);
+  }
+
+  html {
+    color-scheme: dark;
+    scroll-padding-top: calc(var(--header-h) + 1rem);
+  }
+
+  body {
+    background-color: var(--ink-0);
+    color: var(--paper);
+    font-family: var(--font-sans);
+    font-size: var(--text-body);
+    line-height: 1.55;
+    font-synthesis: none;
+    font-kerning: normal;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+
+  /* Параллакс и маски не должны давать горизонтальный скролл; clip не ломает sticky. */
+  #root {
+    overflow-x: clip;
+  }
+
+  h1,
+  h2,
+  h3 {
+    font-family: var(--font-display);
+    font-weight: 300;
+    text-wrap: balance;
+    hyphens: manual;
+    overflow-wrap: break-word;
+  }
+
+  p,
+  li,
+  dd,
+  blockquote,
+  figcaption {
+    text-wrap: pretty;
+    hyphens: auto;
+  }
+
+  /* ≈ 60 знаков Geist */
+  p {
+    max-inline-size: 40em;
+  }
+
+  :focus-visible {
+    outline: 2px solid var(--sage-bright);
+    outline-offset: 2px;
+  }
+
+  /* На шалфее --sage-bright не дотягивает до 3:1, кольцо белое. */
+  :where(.bg-sage, .bg-sage-deep) :focus-visible {
+    outline-color: var(--on-sage);
+  }
+
+  /* Цель ссылки «К содержимому» получает фокус программно, рамка ей не нужна. */
+  #main:focus {
+    outline: none;
+  }
+
+  ::selection {
+    background-color: var(--sage);
+    color: var(--on-sage);
+  }
+}
+
+/* ---------- Типографика: шкала ---------- */
+
+@utility type-h1 {
+  font-family: var(--font-display);
+  font-size: var(--text-h1);
+  font-weight: 300;
+  line-height: 1.02;
+  letter-spacing: -0.035em;
+}
+@utility type-h2 {
+  font-family: var(--font-display);
+  font-size: var(--text-h2);
+  font-weight: 300;
+  line-height: 1.08;
+  letter-spacing: -0.025em;
+}
+@utility type-h3 {
+  font-family: var(--font-display);
+  font-size: var(--text-h3);
+  font-weight: 400;
+  line-height: 1.2;
+  letter-spacing: -0.01em;
+}
+@utility type-price {
+  font-family: var(--font-mono);
+  font-size: var(--text-price);
+  font-weight: 400;
+  line-height: 1.1;
+  letter-spacing: -0.02em;
+  font-variant-numeric: tabular-nums lining-nums;
+}
+@utility type-lead {
+  font-family: var(--font-sans);
+  font-size: var(--text-lead);
+  line-height: 1.5;
+  max-inline-size: 30em; /* ≈ 46 знаков */
+}
+@utility type-body {
+  font-family: var(--font-sans);
+  font-size: var(--text-body);
+  line-height: 1.55;
+}
+@utility type-small {
+  font-family: var(--font-sans);
+  font-size: var(--text-small);
+  line-height: 1.5;
+}
+@utility type-label {
+  font-family: var(--font-mono);
+  font-size: var(--text-label);
+  font-weight: 400;
+  line-height: 1.3;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  font-variant-numeric: tabular-nums lining-nums;
+}
+@utility type-ui {
+  font-family: var(--font-sans);
+  font-size: var(--text-ui);
+  font-weight: 500;
+  line-height: 1.2;
+}
+
+/* Поля страницы: общая ширина для шапки и всех секций. */
+@utility shell {
+  width: 100%;
+  max-width: var(--shell-max);
+  margin-inline: auto;
+  padding-inline: var(--gutter);
+}
+
+/* ---------- Кнопки ---------- */
+
+/* Нажатие — scale(0.97) за --dur-press; при reduce остаётся только смена цвета. */
+@utility press {
+  transition: transform var(--dur-press) var(--ease-out);
+  @media (prefers-reduced-motion: no-preference) {
+    &:active {
+      transform: scale(0.97);
+    }
+  }
+}
+
+@utility btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  min-height: 2.75rem;
+  padding-inline: 1.25rem;
+  border: 1px solid transparent;
+  border-radius: var(--radius);
+  font-family: var(--font-sans);
+  font-size: var(--text-ui);
+  font-weight: 500;
+  line-height: 1.2;
+  white-space: nowrap;
+  user-select: none;
+  -webkit-tap-highlight-color: transparent;
+  transition:
+    background-color var(--dur-ui) ease,
+    border-color var(--dur-ui) ease,
+    color var(--dur-ui) ease,
+    transform var(--dur-press) var(--ease-out);
+  @media (prefers-reduced-motion: no-preference) {
+    &:active {
+      transform: scale(0.97);
+    }
+  }
+}
+@utility btn-primary {
+  background-color: var(--paper);
+  color: var(--ink-0);
+  @media (hover: hover) and (pointer: fine) {
+    &:hover {
+      background-color: color-mix(in oklab, var(--paper), var(--fog));
+    }
+  }
+}
+@utility btn-secondary {
+  background-color: var(--ink-2);
+  border-color: var(--line);
+  color: var(--paper);
+  @media (hover: hover) and (pointer: fine) {
+    &:hover {
+      background-color: var(--ink-3);
+    }
+  }
+}
+
+/* ---------- Ховеры: только точный указатель и без reduce ---------- */
+
+@utility hover-lift {
+  @media (hover: hover) and (pointer: fine) and (prefers-reduced-motion: no-preference) {
+    transition: transform var(--dur-ui) ease;
+    &:hover {
+      transform: translateY(-2px);
+    }
+  }
+}
+@utility hover-zoom {
+  @media (hover: hover) and (pointer: fine) and (prefers-reduced-motion: no-preference) {
+    & img {
+      transition: transform var(--dur-ui) ease;
+    }
+    &:hover img {
+      transform: scale(1.03);
+    }
+  }
+}
+
+/* ---------- Параллакс: привязан к прокрутке, без JS ---------- */
+
+/* На img крупного фото внутри контейнера с overflow-hidden. Двигает translate и scale
+   (отдельные свойства), поэтому не спорит с hover-zoom на transform. */
+@utility parallax {
+  @media (prefers-reduced-motion: no-preference) {
+    @supports (animation-timeline: view()) {
+      animation: parallax linear both;
+      animation-timeline: view();
+    }
+  }
+}
+
+@keyframes parallax {
+  /* scale 1.14 — запас, чтобы при сдвиге на ±6% не открывались края */
+  from {
+    translate: 0 -6%;
+    scale: 1.14;
+  }
+  to {
+    translate: 0 6%;
+    scale: 1.14;
+  }
+}
+
+/* ---------- Карточка-«папка» ---------- */
+
+@layer components {
+  /* Маска из пяти слоёв: колонка со вкладкой, S-образный спуск (SVG), тело под вырезом,
+     правая полоса и скруглённый угол опущенной части. Работает на любом размере и фоне.
+     Процент в mask-position считается от (ширина − ширина слоя), поэтому x спуска
+     собран так, чтобы его край попал ровно в (1 − q) × ширину. */
+  .notch-card {
+    --notch-h: 1.75rem; /* глубина выреза */
+    --notch-s: 4.5rem; /* ширина спуска */
+    --notch-q: 0.3; /* доля ширины под опущенной частью */
+    --notch-r: var(--radius-card);
+    mask:
+      linear-gradient(#000 0 0) left top / calc((1 - var(--notch-q)) * 100% - var(--notch-s) + 1px) 100% no-repeat,
+      url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100' preserveAspectRatio='none'%3E%3Cpath d='M0 0C50 0 50 100 100 100H0Z'/%3E%3C/svg%3E")
+        calc((1 - var(--notch-q)) * 100% - var(--notch-q) * var(--notch-s)) 0 / var(--notch-s) calc(var(--notch-h) + 1px) no-repeat,
+      linear-gradient(#000 0 0) left bottom / calc(100% - var(--notch-r) + 1px) calc(100% - var(--notch-h)) no-repeat,
+      linear-gradient(#000 0 0) right bottom / var(--notch-r) calc(100% - var(--notch-h) - var(--notch-r) + 1px) no-repeat,
+      radial-gradient(circle at 0 100%, #000 calc(var(--notch-r) - 0.5px), #0000 var(--notch-r))
+        right top var(--notch-h) / var(--notch-r) var(--notch-r) no-repeat;
+  }
+
+  .notch-card[data-notch="top-left"] {
+    mask:
+      linear-gradient(#000 0 0) right top / calc((1 - var(--notch-q)) * 100% - var(--notch-s) + 1px) 100% no-repeat,
+      url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100' preserveAspectRatio='none'%3E%3Cpath d='M100 0C50 0 50 100 0 100H100Z'/%3E%3C/svg%3E")
+        calc(var(--notch-q) * 100% + var(--notch-q) * var(--notch-s)) 0 / var(--notch-s) calc(var(--notch-h) + 1px) no-repeat,
+      linear-gradient(#000 0 0) right bottom / calc(100% - var(--notch-r) + 1px) calc(100% - var(--notch-h)) no-repeat,
+      linear-gradient(#000 0 0) left bottom / var(--notch-r) calc(100% - var(--notch-h) - var(--notch-r) + 1px) no-repeat,
+      radial-gradient(circle at 100% 100%, #000 calc(var(--notch-r) - 0.5px), #0000 var(--notch-r))
+        left top var(--notch-h) / var(--notch-r) var(--notch-r) no-repeat;
+  }
+}
+
+/* ---------- Появление при прокрутке: Reveal ---------- */
+
+/* Скрытое состояние — только при no-preference: при reduce, без JS или без IO контент
+   виден сразу. Задержку каскада Reveal пишет inline в transition-delay. */
+@media (prefers-reduced-motion: no-preference) {
+  [data-reveal] {
+    transition:
+      opacity var(--dur-reveal) var(--ease-out),
+      translate var(--dur-reveal) var(--ease-out);
+  }
+  [data-reveal]:not([data-visible]) {
+    opacity: 0;
+  }
+  [data-reveal="up"]:not([data-visible]) {
+    translate: 0 16px;
+  }
+
+  /* Видимое состояние задано явно: переход из inset() в none браузер не анимирует. */
+  [data-reveal="clip"] {
+    clip-path: inset(0);
+    transition: clip-path var(--dur-clip) var(--ease-in-out);
+  }
+  [data-reveal="clip"]:not([data-visible]) {
+    opacity: 1;
+    clip-path: inset(0 0 100% 0);
+  }
+  /* transform здесь для hover-zoom: правило перекрывает его transition */
+  [data-reveal="clip"] img {
+    transition:
+      scale var(--dur-clip) var(--ease-in-out),
+      transform var(--dur-ui) ease;
+  }
+  [data-reveal="clip"]:not([data-visible]) img {
+    scale: 1.06;
+  }
+}
+
+/* ---------- Слова заголовка: SplitWords ---------- */
+
+/* Маска слова. Поля по 0.1em — чтобы не резать Й, Ё и выносные элементы;
+   vertical-align: top, потому что у inline-block с overflow базовая линия съезжает вниз. */
+.split-word {
+  display: inline-block;
+  overflow: hidden;
+  padding-block: 0.1em;
+  margin-block: -0.1em;
+  vertical-align: top;
+}
+.split-word > span {
+  display: inline-block;
+}
+
+/* h1 — один раз при первом показе; h2 появляется через Reveal целиком. */
+@media (prefers-reduced-motion: no-preference) {
+  h1[data-split] .split-word > span {
+    transition: translate var(--dur-reveal) var(--ease-out);
+  }
+  @starting-style {
+    h1[data-split] .split-word > span {
+      translate: 0 100%;
+    }
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  h1[data-split] {
+    transition: opacity var(--dur-ui) ease;
+  }
+  @starting-style {
+    h1[data-split] {
+      opacity: 0;
+    }
+  }
+}
