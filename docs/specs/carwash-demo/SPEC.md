@@ -162,7 +162,7 @@
 
 | Что | Бюджет |
 |---|---|
-| JS первого экрана (gzip, по выводу `vite build`) | ≤ 90 КБ |
+| JS первого экрана (gzip, по выводу `vite build`) | ≤ 100 КБ (пустой каркас с React 19 — уже 68,6 КБ, на код сайта остаётся ~30 КБ) |
 | CSS (gzip) | ≤ 20 КБ |
 | Шрифты | 6 файлов woff2, суммарно ≤ 160 КБ, предзагружены 2 |
 | LCP-фото `hero-main-1024.avif` | ≤ 120 КБ |
@@ -269,7 +269,7 @@ export const serviceGroups = [
 
 | ID | Эпик | Волна | Зависит от | Зона файлов | Модель | Статус | Ветка |
 |---|---|---|---|---|---|---|---|
-| E0 | Каркас, тестовый раннер, шрифты | 0 | — | `package.json`, конфиги, `src/main.tsx`, `src/test/setup.ts`, `src/lib/utils.ts`, `src/components/ui/*`, `public/fonts/*` | оркестратор | todo | |
+| E0 | Каркас, тестовый раннер, шрифты | 0 | — | `package.json`, конфиги, `src/main.tsx`, `src/test/setup.ts`, `src/lib/utils.ts`, `src/components/ui/*`, `public/fonts/*` | оркестратор | done | feat/carwash-demo |
 | E1 | Дизайн-система, типографика, примитивы движения, шапка, сборка страницы | 1 | E0 | `index.html`, `src/index.css`, `src/App.tsx`, `src/lib/{format,typo,use-in-view}.ts`, `src/data/{site,services}.ts`, `src/components/kit/*`, `public/favicon.svg`, `src/sections/Header.tsx`, заглушки остальных `src/sections/*.tsx` | opus | todo | |
 | E2 | Фото с Unsplash, AVIF/WebP, манифест | 1 | E0 | `public/images/*`, `src/data/images.ts`, `docs/CREDITS.md` | оркестратор (браузер и отбор глазами) | todo | |
 | E3 | Hero и «О нас» | 2 | E1, E2 | `src/sections/Hero.tsx`, `src/sections/About.tsx` | sonnet | todo | |
@@ -417,3 +417,4 @@ export const serviceGroups = [
 
 - 2026-10-30 spec создан
 - 2026-10-30 по просьбе пользователя: упор на типографику, анимации по скиллам Эмиля Ковальски и оптимизацию; GSAP и fontsource-пакеты убраны, шрифты самохостятся, фото в AVIF/WebP с srcset
+- 2026-10-30 E0 готов: каркас, раннер, шрифты (6 woff2, 159 КБ). npm install требует legacy-peer-deps (в .npmrc) из-за peer-конфликта Babel. Бюджет JS поднят до 100 КБ: пустой каркас весит 68,6 КБ gzip
