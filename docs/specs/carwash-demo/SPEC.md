@@ -270,7 +270,7 @@ export const serviceGroups = [
 | ID | Эпик | Волна | Зависит от | Зона файлов | Модель | Статус | Ветка |
 |---|---|---|---|---|---|---|---|
 | E0 | Каркас, тестовый раннер, шрифты | 0 | — | `package.json`, конфиги, `src/main.tsx`, `src/test/setup.ts`, `src/lib/utils.ts`, `src/components/ui/*`, `public/fonts/*` | оркестратор | done | feat/carwash-demo |
-| E1 | Дизайн-система, типографика, примитивы движения, шапка, сборка страницы | 1 | E0 | `index.html`, `src/index.css`, `src/App.tsx`, `src/lib/{format,typo,use-in-view}.ts`, `src/data/{site,services}.ts`, `src/components/kit/*`, `public/favicon.svg`, `src/sections/Header.tsx`, заглушки остальных `src/sections/*.tsx` | opus | in_progress | |
+| E1 | Дизайн-система, типографика, примитивы движения, шапка, сборка страницы | 1 | E0 | `index.html`, `src/index.css`, `src/App.tsx`, `src/lib/{format,typo,use-in-view}.ts`, `src/data/{site,services}.ts`, `src/components/kit/*`, `public/favicon.svg`, `src/sections/Header.tsx`, заглушки остальных `src/sections/*.tsx` | opus | in_progress | wt/carwash/e1 |
 | E2 | Фото с Unsplash, AVIF/WebP, манифест | 1 | E0 | `public/images/*`, `src/data/images.ts`, `docs/CREDITS.md` | оркестратор (браузер и отбор глазами) | done | feat/carwash-demo |
 | E3 | Hero и «О нас» | 2 | E1, E2 | `src/sections/Hero.tsx`, `src/sections/About.tsx` | sonnet | todo | |
 | E4 | Услуги и калькулятор | 2 | E1, E2 | `src/sections/Services.tsx`, `src/sections/Calculator.tsx`, `src/lib/price.ts` | sonnet | todo | |
@@ -438,3 +438,5 @@ export const serviceGroups = [
 - CompareSlider: один слой с inline `clip-path: inset(0 X% 0 0)`, где X — значение или 100 − значение; у корня inline `touch-action: pan-y` или класс `touch-pan-y`; pointer-события на элементе `role="slider"` всплывают к обработчику, вызывается `setPointerCapture`, значение считается из `getBoundingClientRect`; подсказка — `Element.prototype.animate` с `duration: 1400`, только без reduce.
 - Reviews: «Оценка N из 5» — `aria-label` или текст листового элемента в карточке отзыва.
 - `typo` проверяется на пунктах услуг, отзывах, вопросах и ответах FAQ: после слова из 1–2 русских букв нет обычного пробела.
+- 2026-10-30 встроенная изоляция worktree падает (`$GIT_DIR too big`, длинный путь Windows): включён `core.longpaths`, worktree создаются вручную в `.claude/worktrees/<epic>` с ветками `wt/carwash/<epic>`
+- 2026-10-30 тесты-контракт закоммичены (240 тестов, 18 файлов красные по отсутствию модулей); tsc в сборке исключает тесты. E1 запущен (opus)
