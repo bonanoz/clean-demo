@@ -8,7 +8,7 @@ export function BeforeAfter() {
     <section id="results" aria-labelledby="results-title" className="shell py-(--section-y)">
       <div className="grid gap-10 lg:grid-cols-[minmax(0,2fr)_minmax(0,3fr)] lg:items-end">
         <div className="flex flex-col gap-6">
-          <SectionHeading id="results-title" label="[РЕЗУЛЬТАТ]" title="До и после химчистки" />
+          <SectionHeading id="results-title" label="[РЕЗУЛЬТАТ]" title="До и после мойки" />
           <p className="type-lead text-fog">
             {typo('Один кузов в одном ракурсе. Потяните ползунок или двигайте его стрелками, чтобы сравнить.')}
           </p>
