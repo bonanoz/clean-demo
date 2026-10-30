@@ -32,7 +32,9 @@ export function Calculator() {
         <Reveal className="flex min-w-0 flex-col gap-8">
           <fieldset className="min-w-0">
             <legend className="mb-3">
-              <MonoLabel>[01] / Класс машины</MonoLabel>
+              <MonoLabel>
+                <span aria-hidden="true">[01] / </span>Класс машины
+              </MonoLabel>
             </legend>
             <div className="grid gap-3 sm:grid-cols-3">
               {carClasses.map((c) => (
@@ -56,7 +58,9 @@ export function Calculator() {
 
           <fieldset className="min-w-0">
             <legend className="mb-3">
-              <MonoLabel>[02] / Услуги</MonoLabel>
+              <MonoLabel>
+                <span aria-hidden="true">[02] / </span>Услуги
+              </MonoLabel>
             </legend>
             <div className="grid gap-3 sm:grid-cols-2">
               {services.map((s) => (
@@ -70,7 +74,7 @@ export function Calculator() {
                     className={checkbox}
                   />
                   <span className="type-ui flex-1 text-paper">{typo(s.title)}</span>
-                  <span className="type-small tabular-nums text-fog">{formatRub(calculatePrice(carClass, [s.id]))}</span>
+                  <span className="type-small font-mono tabular-nums text-fog">{formatRub(calculatePrice(carClass, [s.id]))}</span>
                 </label>
               ))}
             </div>
@@ -93,7 +97,8 @@ export function Calculator() {
                   {formatRub(total)}
                 </span>
               </output>
-              <div className="type-small min-h-[3em]">
+              {/* своя живая область: подсказку «Выберите хотя бы одну услугу» диктор читает вместе с «0 ₽» */}
+              <div aria-live="polite" className="type-small min-h-[3em]">
                 {total === 0 ? <p>{typo('Выберите хотя бы одну услугу')}</p> : <p>{typo('Точную цену назовём после осмотра машины.')}</p>}
               </div>
             </div>

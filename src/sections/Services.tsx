@@ -38,10 +38,11 @@ function PhotoCell({ name, alt, index, className }: { name: ImageName; alt: stri
 const groupLabel = (group: (typeof serviceGroups)[number]) => `[УСЛУГА] [${group.index}] / ${group.label}`
 
 /** Кузов и защита: фото, описание, пункты, цена и запись. */
-function CompactCard({ group, photo, alt, index }: { group: typeof exterior | typeof protection; photo: ImageName; alt: string; index: number }) {
+function CompactCard({ group, photo, alt }: { group: typeof exterior | typeof protection; photo: ImageName; alt: string }) {
   const titleId = `service-${group.id}`
   return (
-    <Reveal index={index} className="h-full">
+    // Без Reveal: в стопке эти карточки едут поверх салона, и скрытая карточка оставляла бы чёрный провал на панели
+    <div className="h-full">
       <article aria-labelledby={titleId} className="hover-lift flex h-full flex-col gap-5 rounded-card bg-ink-2 p-4 sm:p-6">
         <div className="hover-zoom relative h-44 overflow-hidden rounded-xl bg-ink-3">
           <Photo name={photo} alt={alt} sizes="(min-width: 768px) 44vw, 92vw" className="absolute inset-0 size-full object-cover" />
@@ -68,7 +69,7 @@ function CompactCard({ group, photo, alt, index }: { group: typeof exterior | ty
           </a>
         </div>
       </article>
-    </Reveal>
+    </div>
   )
 }
 
@@ -141,8 +142,8 @@ export function Services() {
 
         <div className="stack-cover bg-ink-0 pt-4">
           <div className="grid gap-4 md:grid-cols-2">
-            <CompactCard group={exterior} photo="exterior-foam" alt="Чёрная машина в пене перед ручной мойкой" index={0} />
-            <CompactCard group={protection} photo="coating" alt="Мастер полирует кузов тёмной машины" index={1} />
+            <CompactCard group={exterior} photo="exterior-foam" alt="Чёрная машина и колесо в пене" />
+            <CompactCard group={protection} photo="coating" alt="Мастер полирует кузов тёмной машины" />
           </div>
         </div>
       </div>
