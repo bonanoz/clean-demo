@@ -160,7 +160,7 @@
 | Итог калькулятора при смене | состояние | `@starting-style` на новом значении | `opacity`, `translateY(40%)` | `--dur-ui`, `--ease-out` |
 | Подсказка шторки до/после, один раз при первом показе | объяснение | WAAPI (`element.animate`) | `clip-path`, `transform` ручки, 50 → 30 → 70 → 50 | 1400 ms, `--ease-in-out` |
 | Перетаскивание шторки | прямое управление | pointer events + запись в `ref.style`, без setState на кадр | `clip-path`, `transform` | без кривой, за пальцем |
-| Аккордеон FAQ | состояние | Radix + CSS-ключи по `--radix-accordion-content-height` (высота допустима только тут) | `height`, `opacity` | `--dur-ui`, `--ease-out` |
+| Раскрытие ответа FAQ | состояние | своя раскрывашка без Radix: `@starting-style` на открытой панели, высота через `interpolate-size: allow-keywords` внутри `@supports` (где не поддерживается — ответ появляется без высоты, только `opacity`). Закрытие мгновенное: панель уходит в `hidden` | `height` (допустима только тут), `opacity` | `--dur-ui`, `--ease-out` |
 | Подтверждение записи вместо формы | состояние | `@starting-style` | `opacity`, `translateY(8px)` | 250 ms, `--ease-out` |
 
 **Не анимируем:** ошибки валидации (появляются сразу), кольца фокуса, клавиатурное управление шторкой (стрелки двигают её мгновенно), смену радио/чекбоксов в калькуляторе (только цвет, `--dur-ui`).
@@ -286,10 +286,10 @@ export const serviceGroups = [
 | E0 | Каркас, тестовый раннер, шрифты | 0 | — | `package.json`, конфиги, `src/main.tsx`, `src/test/setup.ts`, `src/lib/utils.ts`, `src/components/ui/*`, `public/fonts/*` | оркестратор | done | feat/carwash-demo |
 | E1 | Дизайн-система, типографика, примитивы движения, шапка, сборка страницы | 1 | E0 | `index.html`, `src/index.css`, `src/App.tsx`, `src/lib/{format,typo,use-in-view}.ts`, `src/data/{site,services}.ts`, `src/components/kit/*`, `public/favicon.svg`, `src/sections/Header.tsx`, заглушки остальных `src/sections/*.tsx` | opus | done | feat/carwash-demo |
 | E2 | Фото с Unsplash, AVIF/WebP, манифест | 1 | E0 | `public/images/*`, `src/data/images.ts`, `docs/CREDITS.md` | оркестратор (браузер и отбор глазами) | done | feat/carwash-demo |
-| E3 | Hero и «О нас» | 2 | E1, E2 | `src/sections/Hero.tsx`, `src/sections/About.tsx` | sonnet | todo | |
-| E4 | Услуги и калькулятор | 2 | E1, E2 | `src/sections/Services.tsx`, `src/sections/Calculator.tsx`, `src/lib/price.ts` | sonnet | todo | |
-| E5 | Запись и подвал | 2 | E1, E2 | `src/sections/Booking.tsx`, `src/sections/Footer.tsx`, `src/lib/booking.ts` | sonnet | todo | |
-| E6 | До/после, отзывы, FAQ | 2 | E1, E2 | `src/sections/BeforeAfter.tsx`, `src/components/compare-slider.tsx`, `src/sections/Reviews.tsx`, `src/data/reviews.ts`, `src/sections/Faq.tsx`, `src/data/faq.ts` | sonnet | todo | |
+| E3 | Hero и «О нас» | 2 | E1, E2 | `src/sections/Hero.tsx`, `src/sections/About.tsx` | sonnet | in_progress | wt/carwash/e3 |
+| E4 | Услуги и калькулятор | 2 | E1, E2 | `src/sections/Services.tsx`, `src/sections/Calculator.tsx`, `src/lib/price.ts` | sonnet | in_progress | wt/carwash/e4 |
+| E5 | Запись и подвал | 2 | E1, E2 | `src/sections/Booking.tsx`, `src/sections/Footer.tsx`, `src/lib/booking.ts` | sonnet | in_progress | wt/carwash/e5 |
+| E6 | До/после, отзывы, FAQ | 2 | E1, E2 | `src/sections/BeforeAfter.tsx`, `src/components/compare-slider.tsx`, `src/sections/Reviews.tsx`, `src/data/reviews.ts`, `src/sections/Faq.tsx`, `src/data/faq.ts` | sonnet | in_progress | wt/carwash/e6 |
 
 Статусы: `todo` → `in_progress` → `review` → `done` (или `blocked` + причина в журнале).
 
@@ -397,7 +397,7 @@ export const serviceGroups = [
 
 ### E6. До/после, отзывы, FAQ
 
-- **Что сделать:** BeforeAfter (`id="results"`): h2 «До и после химчистки», `CompareSlider` с `compare-before`/`compare-after`, подписи «До» и «После». Шторка — по рецепту Ковальски: верхнее фото обрезается `clip-path: inset(0 X% 0 0)`, без лишних DOM-слоёв; перетаскивание с `setPointerCapture`, `touch-action: pan-y`, запись в `ref.style` без setState на кадр; подсказка WAAPI один раз при первом показе. Reviews: h2 «Что говорят клиенты», не меньше 4 отзывов из `src/data/reviews.ts`. FAQ: h2 «Частые вопросы», не меньше 6 вопросов из `src/data/faq.ts` на shadcn `Accordion` (single, collapsible).
+- **Что сделать:** BeforeAfter (`id="results"`): h2 «До и после мойки», `CompareSlider` с `compare-before`/`compare-after`, подписи «До» и «После». Шторка — по рецепту Ковальски: верхнее фото обрезается `clip-path: inset(0 X% 0 0)`, без лишних DOM-слоёв; перетаскивание с `setPointerCapture`, `touch-action: pan-y`, запись в `ref.style` без setState на кадр; подсказка WAAPI один раз при первом показе. Reviews: h2 «Что говорят клиенты», не меньше 4 отзывов из `src/data/reviews.ts`. FAQ: h2 «Частые вопросы», не меньше 6 вопросов из `src/data/faq.ts`: своя раскрывашка без Radix — кнопка с `aria-expanded` и `aria-controls`, панель с `id`, `role="region"` и `aria-labelledby`, закрытая панель — `hidden`; открыт один вопрос, повторный клик закрывает. Radix Accordion весит ~15,5 КБ gzip и выводит JS за бюджет.
 - **Интерфейсы:**
   - `CompareSlider({ before, after, beforeAlt, afterAlt, initial = 50 })` из `src/components/compare-slider.tsx`; `before`/`after` — `ImageName`.
   - Ползунок: `role="slider"`, `aria-label="Сравнение до и после"`, `aria-valuemin=0`, `aria-valuemax=100`, `aria-valuenow`; `ArrowRight`/`ArrowUp` +5, `ArrowLeft`/`ArrowDown` −5, `Home` → 0, `End` → 100, в пределах 0–100.
@@ -481,3 +481,5 @@ export const serviceGroups = [
 - 2026-10-30 E1 done: 1 круг ревью (clip-path, ширины ch→em, белый на шалфее + 9 мелочей), смержен. JS 85,06 КБ → 82,11 КБ после cn/vite (таблицы cn только под классы src; src/lib/cn-tables.ts генерируется, при merge берётся наша версия через .gitattributes merge=ours, потом пересобирается)
 - 2026-10-31 проект переехал в `C:\projects\clean-cars`: `.git` и `.npmrc` перенесены вручную, `node_modules` — `npm ci`. Тесты как до переезда: 115 зелёных, 28 красных (волна 2)
 - 2026-10-31 пользователь добавил референс hero (Breezy) и машину `hero-car`. Решения: h1 «Заводской / блеск», Unbounded 700, бенто под заголовком, машина из nano banana. Оркестратор нарезал `hero-car` (1024.avif — 24 КБ), добавил токены `--ghost`, `--text-display`, утилиту `type-display`, preload `hero-car`, разделы E3 и E4 в `index.css`. Тесты-контракт изменены: `images.test.ts` (14 имён), `Hero.test.tsx` (h1, пять фото, `hero-car` с priority), `App.test.tsx` (preload двух картинок)
+- 2026-10-31 волна 2 запущена: E3–E6 на sonnet, worktree вручную в `.claude/worktrees/e3…e6`
+- 2026-10-31 E6: Radix Accordion стоил ~15,5 КБ gzip, JS вышел на 100,68 КБ при бюджете 100 — FAQ переводится на свою раскрывашку без Radix. Заголовок слайдера «До и после химчистки» → «До и после мойки»: на фото кузов, не салон (тест `BeforeAfter.test.tsx` поправлен)
