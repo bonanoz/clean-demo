@@ -11,9 +11,9 @@ function renderResults() {
 }
 
 describe('E6: BeforeAfter', () => {
-  it('h2 «До и после химчистки»', () => {
+  it('h2 «До и после мойки»', () => {
     const section = renderResults()
-    expect(within(section).getByRole('heading', { level: 2, name: nameIs('До и после химчистки') })).toBeInTheDocument()
+    expect(within(section).getByRole('heading', { level: 2, name: nameIs('До и после мойки') })).toBeInTheDocument()
   })
 
   it('внутри слайдер «Сравнение до и после»', () => {
