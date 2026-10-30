@@ -440,3 +440,18 @@ export const serviceGroups = [
 - `typo` проверяется на пунктах услуг, отзывах, вопросах и ответах FAQ: после слова из 1–2 русских букв нет обычного пробела.
 - 2026-10-30 встроенная изоляция worktree падает (`$GIT_DIR too big`, длинный путь Windows): включён `core.longpaths`, worktree создаются вручную в `.claude/worktrees/<epic>` с ветками `wt/carwash/<epic>`
 - 2026-10-30 тесты-контракт закоммичены (240 тестов, 18 файлов красные по отсутствию модулей); tsc в сборке исключает тесты. E1 запущен (opus)
+
+## Классы и токены из E1 (волна 2 пользуется только ими)
+
+- **Размер текста — классы `type-h1`, `type-h2`, `type-h3`, `type-price`, `type-lead`, `type-body`, `type-small`, `type-label`, `type-ui`** (Geist 500, 15 px — кнопки, меню). Не `text-h2` и не `text-[…]`: `cn()` (tailwind-merge) принимает `text-h2` за цвет и выбрасывает его рядом с `text-fog`. Токены `--text-*` лежат в `:root`.
+- Цвета — утилиты из `@theme`: `bg-ink-0…3`, `text-paper`, `text-fog`, `text-fog-dim`, `border-line`, `bg-sage`, `bg-sage-deep`, `text-sage-bright`, `text-on-sage` (белый — единственный цвет текста на `bg-sage`), `text-danger` (`--danger: #f0786b`, ошибки форм). Никаких `bg-[#…]`.
+- Раскладка: `shell` — контейнер страницы с полями (`--gutter`, `--shell-max`); `rounded-card` — радиус карточек (22 px); `--header-h` — высота шапки (для `sticky top`, `scroll-margin`); `--section-y` — вертикальный отступ секций.
+- Кнопки: `btn` + `btn-primary` / `btn-secondary`; нажатие — `press`.
+- Ховеры: `hover-lift` (карточка), `hover-zoom` (фото внутри `overflow-hidden`) — уже загейчены `(hover: hover) and (pointer: fine)` и reduced motion.
+- Параллакс: класс `parallax` на `img` внутри контейнера с `overflow-hidden`; двигает отдельные свойства `translate`/`scale`.
+- Движение: `--ease-out`, `--ease-in-out`, `--ease-drawer`, `--dur-press`, `--dur-ui`, `--dur-reveal`, `--dur-clip` (900 ms), `--stagger`, `--stagger-words` (40 ms). `@starting-style` в TSX — вариант Tailwind `starting:` вместе с `motion-reduce:`.
+- `Reveal` — только обёртка: ховер и параллакс вешаются на элемент ВНУТРИ, иначе переходы спорят. `parallax` и `Reveal variant="clip"` на одном `img` не совмещать: keyframes параллакса перебивают `scale` клипа — клип на обёртке, параллакс на `img`.
+- `NotchCard`: под вырезом остаётся `--notch-h` (28 px) — верхний отступ содержимого не меньше.
+- `MonoLabel` сам пропускает текст через `typo`. `Photo` берёт `width`/`height` из манифеста, если не переданы.
+- Ширину текста ограничивать в `em`, не в `ch`: `ch` зависит от гарнитуры и прыгает при подмене шрифта (CLS).
+- Знака ₽ нет в Geist и Geist Mono — рисуется фолбэком (Arial / Courier New). Проверить глазами в ценах.
