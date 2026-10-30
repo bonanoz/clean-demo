@@ -287,8 +287,8 @@ export const serviceGroups = [
 | E1 | Дизайн-система, типографика, примитивы движения, шапка, сборка страницы | 1 | E0 | `index.html`, `src/index.css`, `src/App.tsx`, `src/lib/{format,typo,use-in-view}.ts`, `src/data/{site,services}.ts`, `src/components/kit/*`, `public/favicon.svg`, `src/sections/Header.tsx`, заглушки остальных `src/sections/*.tsx` | opus | done | feat/carwash-demo |
 | E2 | Фото с Unsplash, AVIF/WebP, манифест | 1 | E0 | `public/images/*`, `src/data/images.ts`, `docs/CREDITS.md` | оркестратор (браузер и отбор глазами) | done | feat/carwash-demo |
 | E3 | Hero и «О нас» | 2 | E1, E2 | `src/sections/Hero.tsx`, `src/sections/About.tsx` | sonnet | in_progress | wt/carwash/e3 |
-| E4 | Услуги и калькулятор | 2 | E1, E2 | `src/sections/Services.tsx`, `src/sections/Calculator.tsx`, `src/lib/price.ts` | sonnet | in_progress | wt/carwash/e4 |
-| E5 | Запись и подвал | 2 | E1, E2 | `src/sections/Booking.tsx`, `src/sections/Footer.tsx`, `src/lib/booking.ts` | sonnet | in_progress | wt/carwash/e5 |
+| E4 | Услуги и калькулятор | 2 | E1, E2 | `src/sections/Services.tsx`, `src/sections/Calculator.tsx`, `src/lib/price.ts` | sonnet | done | feat/carwash-demo |
+| E5 | Запись и подвал | 2 | E1, E2 | `src/sections/Booking.tsx`, `src/sections/Footer.tsx`, `src/lib/booking.ts` | sonnet | done | feat/carwash-demo |
 | E6 | До/после, отзывы, FAQ | 2 | E1, E2 | `src/sections/BeforeAfter.tsx`, `src/components/compare-slider.tsx`, `src/sections/Reviews.tsx`, `src/data/reviews.ts`, `src/sections/Faq.tsx`, `src/data/faq.ts` | sonnet | in_progress | wt/carwash/e6 |
 
 Статусы: `todo` → `in_progress` → `review` → `done` (или `blocked` + причина в журнале).
@@ -483,3 +483,6 @@ export const serviceGroups = [
 - 2026-10-31 пользователь добавил референс hero (Breezy) и машину `hero-car`. Решения: h1 «Заводской / блеск», Unbounded 700, бенто под заголовком, машина из nano banana. Оркестратор нарезал `hero-car` (1024.avif — 24 КБ), добавил токены `--ghost`, `--text-display`, утилиту `type-display`, preload `hero-car`, разделы E3 и E4 в `index.css`. Тесты-контракт изменены: `images.test.ts` (14 имён), `Hero.test.tsx` (h1, пять фото, `hero-car` с priority), `App.test.tsx` (preload двух картинок)
 - 2026-10-31 волна 2 запущена: E3–E6 на sonnet, worktree вручную в `.claude/worktrees/e3…e6`
 - 2026-10-31 E6: Radix Accordion стоил ~15,5 КБ gzip, JS вышел на 100,68 КБ при бюджете 100 — FAQ переводится на свою раскрывашку без Radix. Заголовок слайдера «До и после химчистки» → «До и после мойки»: на фото кузов, не салон (тест `BeforeAfter.test.tsx` поправлен)
+- 2026-10-31 typo(): неразрывный пробел после «ул.», «д.» и подобных сокращений и перед номером дома в конце фразы («Примерная, 1») — ревью E5; в typo.test.ts добавлены два теста
+- 2026-10-31 E5 done: 2 круга ревью (Reveal над формой, tabular-nums, a11y-мелочи). JS после merge 86,10 КБ gzip, CSS 9,01 КБ
+- 2026-10-31 E4 done: 1 круг ревью, APPROVE. Стопка включается при ширине ≥ 1280 и высоте ≥ 800 или ширине ≥ 1024 и высоте ≥ 960 — иначе залипший блок салона не помещается в экран. JS после merge 88,85 КБ gzip, CSS 9,81 КБ. Мелочи ревью (моно у цены в строке, подсказка вне live-региона, скобки в имени группы, Reveal на накладке, alt exterior-foam) — на сведение

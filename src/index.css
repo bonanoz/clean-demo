@@ -527,6 +527,51 @@
 
 /* ---------- Стопка карточек услуг ---------- */
 
+/* Services: .stack-base (салон) залипает под шапкой, .stack-cover (кузов и защита) наезжает на неё
+   и перекрывает снизу. Только на ≥ 1024 px и без reduce. Карточка салона должна поместиться в экран
+   целиком вместе с шапкой, иначе залипший низ нельзя дочитать: на 1280 px и шире она 701 px, на 1024–1279
+   (панель в три колонки) — 840 px, поэтому порог по высоте экрана свой. Ниже порога блоки идут обычным потоком.
+   Подложка .stack-cover того же цвета, что страница, — перекрытый блок не просвечивает между карточками. */
+@media (prefers-reduced-motion: no-preference) and ((min-width: 64rem) and (min-height: 60rem)), (prefers-reduced-motion: no-preference) and ((min-width: 80rem) and (min-height: 50rem)) {
+  .stack-base {
+    position: sticky;
+    top: calc(var(--header-h) + 1rem);
+    transform-origin: 50% 0;
+  }
+  /* position нужен, чтобы блок лёг поверх залипшего sticky-соседа: у того z-index auto, но он позиционирован */
+  .stack-cover {
+    position: relative;
+  }
+
+  /* Масштаб и прозрачность ведёт прокрутка наезжающего блока, а не самой залипшей карточки: её view()
+     не покажет, насколько её уже перекрыли. Имя таймлайна объявлено на общем предке (timeline-scope).
+     Свойства — transform и opacity прямо на элементе, без CSS-переменных. */
+  @supports (animation-timeline: view()) and (timeline-scope: --stack-cover) {
+    .stack {
+      timeline-scope: --stack-cover;
+    }
+    .stack-cover {
+      view-timeline: --stack-cover block;
+    }
+    .stack-base {
+      animation: stack-recede linear both;
+      animation-timeline: --stack-cover;
+      animation-range: entry 0% entry 100%;
+    }
+  }
+}
+
+@keyframes stack-recede {
+  from {
+    transform: scale(1);
+    opacity: 1;
+  }
+  to {
+    transform: scale(0.96);
+    opacity: 0.5;
+  }
+}
+
 /* ---------- Карточка-«папка» ---------- */
 
 @layer components {
