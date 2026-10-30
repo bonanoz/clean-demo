@@ -160,7 +160,7 @@
 | Итог калькулятора при смене | состояние | `@starting-style` на новом значении | `opacity`, `translateY(40%)` | `--dur-ui`, `--ease-out` |
 | Подсказка шторки до/после, один раз при первом показе | объяснение | WAAPI (`element.animate`) | `clip-path`, `transform` ручки, 50 → 30 → 70 → 50 | 1400 ms, `--ease-in-out` |
 | Перетаскивание шторки | прямое управление | pointer events + запись в `ref.style`, без setState на кадр | `clip-path`, `transform` | без кривой, за пальцем |
-| Аккордеон FAQ | состояние | Radix + CSS-ключи по `--radix-accordion-content-height` (высота допустима только тут) | `height`, `opacity` | `--dur-ui`, `--ease-out` |
+| Раскрытие ответа FAQ | состояние | своя раскрывашка без Radix: `@starting-style` на открытой панели, высота через `interpolate-size: allow-keywords` внутри `@supports` (где не поддерживается — ответ появляется без высоты, только `opacity`). Закрытие мгновенное: панель уходит в `hidden` | `height` (допустима только тут), `opacity` | `--dur-ui`, `--ease-out` |
 | Подтверждение записи вместо формы | состояние | `@starting-style` | `opacity`, `translateY(8px)` | 250 ms, `--ease-out` |
 
 **Не анимируем:** ошибки валидации (появляются сразу), кольца фокуса, клавиатурное управление шторкой (стрелки двигают её мгновенно), смену радио/чекбоксов в калькуляторе (только цвет, `--dur-ui`).
@@ -397,7 +397,7 @@ export const serviceGroups = [
 
 ### E6. До/после, отзывы, FAQ
 
-- **Что сделать:** BeforeAfter (`id="results"`): h2 «До и после химчистки», `CompareSlider` с `compare-before`/`compare-after`, подписи «До» и «После». Шторка — по рецепту Ковальски: верхнее фото обрезается `clip-path: inset(0 X% 0 0)`, без лишних DOM-слоёв; перетаскивание с `setPointerCapture`, `touch-action: pan-y`, запись в `ref.style` без setState на кадр; подсказка WAAPI один раз при первом показе. Reviews: h2 «Что говорят клиенты», не меньше 4 отзывов из `src/data/reviews.ts`. FAQ: h2 «Частые вопросы», не меньше 6 вопросов из `src/data/faq.ts` на shadcn `Accordion` (single, collapsible).
+- **Что сделать:** BeforeAfter (`id="results"`): h2 «До и после мойки», `CompareSlider` с `compare-before`/`compare-after`, подписи «До» и «После». Шторка — по рецепту Ковальски: верхнее фото обрезается `clip-path: inset(0 X% 0 0)`, без лишних DOM-слоёв; перетаскивание с `setPointerCapture`, `touch-action: pan-y`, запись в `ref.style` без setState на кадр; подсказка WAAPI один раз при первом показе. Reviews: h2 «Что говорят клиенты», не меньше 4 отзывов из `src/data/reviews.ts`. FAQ: h2 «Частые вопросы», не меньше 6 вопросов из `src/data/faq.ts`: своя раскрывашка без Radix — кнопка с `aria-expanded` и `aria-controls`, панель с `id`, `role="region"` и `aria-labelledby`, закрытая панель — `hidden`; открыт один вопрос, повторный клик закрывает. Radix Accordion весит ~15,5 КБ gzip и выводит JS за бюджет.
 - **Интерфейсы:**
   - `CompareSlider({ before, after, beforeAlt, afterAlt, initial = 50 })` из `src/components/compare-slider.tsx`; `before`/`after` — `ImageName`.
   - Ползунок: `role="slider"`, `aria-label="Сравнение до и после"`, `aria-valuemin=0`, `aria-valuemax=100`, `aria-valuenow`; `ArrowRight`/`ArrowUp` +5, `ArrowLeft`/`ArrowDown` −5, `Home` → 0, `End` → 100, в пределах 0–100.
@@ -482,3 +482,4 @@ export const serviceGroups = [
 - 2026-10-31 проект переехал в `C:\projects\clean-cars`: `.git` и `.npmrc` перенесены вручную, `node_modules` — `npm ci`. Тесты как до переезда: 115 зелёных, 28 красных (волна 2)
 - 2026-10-31 пользователь добавил референс hero (Breezy) и машину `hero-car`. Решения: h1 «Заводской / блеск», Unbounded 700, бенто под заголовком, машина из nano banana. Оркестратор нарезал `hero-car` (1024.avif — 24 КБ), добавил токены `--ghost`, `--text-display`, утилиту `type-display`, preload `hero-car`, разделы E3 и E4 в `index.css`. Тесты-контракт изменены: `images.test.ts` (14 имён), `Hero.test.tsx` (h1, пять фото, `hero-car` с priority), `App.test.tsx` (preload двух картинок)
 - 2026-10-31 волна 2 запущена: E3–E6 на sonnet, worktree вручную в `.claude/worktrees/e3…e6`
+- 2026-10-31 E6: Radix Accordion стоил ~15,5 КБ gzip, JS вышел на 100,68 КБ при бюджете 100 — FAQ переводится на свою раскрывашку без Radix. Заголовок слайдера «До и после химчистки» → «До и после мойки»: на фото кузов, не салон (тест `BeforeAfter.test.tsx` поправлен)
