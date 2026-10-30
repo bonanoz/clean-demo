@@ -11,11 +11,12 @@ function renderHero() {
 }
 
 describe('E3: Hero', () => {
-  it('ровно один h1 «Вернём машине заводской блеск»', () => {
+  it('ровно один h1 «Заводской блеск», «Вернём машине заводской блеск» — в лиде', () => {
     const hero = renderHero()
     const h1s = within(hero).getAllByRole('heading', { level: 1 })
     expect(h1s).toHaveLength(1)
-    expect(within(hero).getByRole('heading', { level: 1, name: nameIs('Вернём машине заводской блеск') })).toBe(h1s[0])
+    expect(within(hero).getByRole('heading', { level: 1, name: nameIs('Заводской блеск') })).toBe(h1s[0])
+    expect(hero).toHaveTextContent(/Вернём машине заводской блеск/)
   })
 
   it('ссылки «Записаться» → #booking и «Рассчитать цену» → #calculator', () => {
@@ -29,10 +30,10 @@ describe('E3: Hero', () => {
     for (const a of calc) expect(a).toHaveAttribute('href', '#calculator')
   })
 
-  it('бенто: четыре фото из /images/ с alt, width и height', () => {
+  it('машина и бенто: пять фото из /images/ с alt, width и height', () => {
     const hero = renderHero()
-    const imgs = expectValidPhotos(hero, 4)
-    for (const name of ['hero-main', 'hero-wheel', 'hero-front', 'hero-interior']) {
+    const imgs = expectValidPhotos(hero, 5)
+    for (const name of ['hero-car', 'hero-main', 'hero-wheel', 'hero-front', 'hero-interior']) {
       expect(
         imgs.some((img) => img.getAttribute('src')?.startsWith(`/images/${name}-`)),
         `нет фото ${name}`,
@@ -40,19 +41,24 @@ describe('E3: Hero', () => {
     }
   })
 
-  it('hero-main: fetchpriority="high", не lazy; sizes зафиксирован', () => {
+  // sizes совпадают с preload в index.html, иначе браузер скачает картинку дважды
+  it.each([
+    ['hero-car', '(min-width: 1024px) 50vw, 84vw'],
+    ['hero-main', '(min-width: 1024px) 58vw, 100vw'],
+  ])('%s: fetchpriority="high", не lazy; sizes зафиксирован', (name, sizes) => {
     const hero = renderHero()
-    const main = hero.querySelector<HTMLImageElement>('img[src^="/images/hero-main-"]')!
-    expect(main).toHaveAttribute('fetchpriority', 'high')
-    expect(main).not.toHaveAttribute('loading', 'lazy')
-    const sources = main.closest('picture')!.querySelectorAll('source')
+    const img = hero.querySelector<HTMLImageElement>(`img[src^="/images/${name}-"]`)!
+    expect(img).toHaveAttribute('fetchpriority', 'high')
+    expect(img).not.toHaveAttribute('loading', 'lazy')
+    const sources = img.closest('picture')!.querySelectorAll('source')
     expect(sources.length).toBeGreaterThanOrEqual(2)
-    for (const s of sources) expect(s).toHaveAttribute('sizes', '(min-width: 1024px) 58vw, 100vw')
+    for (const s of sources) expect(s).toHaveAttribute('sizes', sizes)
   })
 
   it('остальные фото — loading="lazy", без fetchpriority="high"', () => {
     const hero = renderHero()
-    const others = [...hero.querySelectorAll('img')].filter((img) => !img.getAttribute('src')?.startsWith('/images/hero-main-'))
+    const first = ['/images/hero-main-', '/images/hero-car-']
+    const others = [...hero.querySelectorAll('img')].filter((img) => !first.some((p) => img.getAttribute('src')?.startsWith(p)))
     expect(others.length).toBeGreaterThanOrEqual(3)
     for (const img of others) {
       expect(img).toHaveAttribute('loading', 'lazy')

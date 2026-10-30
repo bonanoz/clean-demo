@@ -140,12 +140,17 @@
   --sage: #5f7561;
   --sage-deep: #475a4b;
   --sage-bright: #8fa691;
+  /* Бледная строка display-заголовка: 3,6:1 на --ink-0, порог крупного текста 3:1 с запасом. */
+  --ghost: #646865;
   /* Текст на --sage только белый (--on-sage): --paper на шалфее даёт 4,49:1, белый — 5:1. */
   --on-sage: #ffffff;
   /* Ошибки форм: в референсе красного нет, тон подобран под 7:1 на --ink-0. */
   --danger: #f0786b;
 
   /* Шкала: плавно между 360 и 1440 px. Межстрочный, трекинг и вес — в утилитах type-*. */
+  /* Display в hero: «ЗАВОДСКОЙ» в Unbounded 700 — 8,47 em минус 0,27 em трекинга — на всю
+     ширину shell. 100vw включает полосу прокрутки, поэтому делим с запасом. */
+  --text-display: calc((min(100vw, var(--shell-max)) - 2 * var(--gutter)) / 8.5);
   --text-h1: clamp(2.125rem, 1.4rem + 3.4vw, 4.5rem);
   --text-h2: clamp(1.75rem, 1.3rem + 2vw, 3.25rem);
   --text-h3: clamp(1.25rem, 1.1rem + 0.6vw, 1.625rem);
@@ -216,6 +221,7 @@
   --color-sage: var(--sage);
   --color-sage-deep: var(--sage-deep);
   --color-sage-bright: var(--sage-bright);
+  --color-ghost: var(--ghost);
   --color-on-sage: var(--on-sage);
   --color-danger: var(--danger);
 
@@ -334,6 +340,17 @@
 
 /* ---------- Типографика: шкала ---------- */
 
+/* Огромный заголовок hero: по слову на строку на всю ширину, машина лежит поверх. */
+@utility type-display {
+  font-family: var(--font-display);
+  font-size: var(--text-display);
+  font-weight: 700;
+  line-height: 0.9;
+  letter-spacing: -0.03em;
+  text-transform: uppercase;
+  /* слово не рвётся посередине, даже если фолбэк окажется шире */
+  overflow-wrap: normal;
+}
 @utility type-h1 {
   font-family: var(--font-display);
   font-size: var(--text-h1);
@@ -508,6 +525,8 @@
   }
 }
 
+/* ---------- Стопка карточек услуг ---------- */
+
 /* ---------- Карточка-«папка» ---------- */
 
 @layer components {
@@ -615,3 +634,5 @@
     }
   }
 }
+
+/* ---------- Hero: машина поверх заголовка ---------- */

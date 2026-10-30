@@ -8,6 +8,7 @@ const KB = 1024
 
 const names = [
   'hero-main',
+  'hero-car',
   'hero-wheel',
   'hero-front',
   'hero-interior',
@@ -26,9 +27,9 @@ const files = names.flatMap((name) =>
 )
 
 describe('E2: images', () => {
-  it('в списке 13 имён и 78 файлов', () => {
-    expect(names).toHaveLength(13)
-    expect(files).toHaveLength(78)
+  it('в списке 14 имён и 84 файла', () => {
+    expect(names).toHaveLength(14)
+    expect(files).toHaveLength(84)
   })
 
   it.each(names)('%s: 6 файлов на месте, каждый не тяжелее 250 КБ', (name) => {
@@ -60,7 +61,7 @@ describe('E2: images', () => {
     }
   })
 
-  it('манифест содержит все 13 имён с положительными целыми width и height', () => {
+  it('манифест содержит все 14 имён с положительными целыми width и height', () => {
     for (const name of names) {
       expect(images, `нет ${name} в манифесте`).toHaveProperty(name)
       const { width, height } = images[name as keyof typeof images]

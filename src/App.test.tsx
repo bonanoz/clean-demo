@@ -108,12 +108,17 @@ describe('E1: index.html', () => {
     }
   })
 
-  it('hero-main предзагружен с imagesrcset и imagesizes', () => {
-    const link = doc.querySelector('link[rel="preload"][as="image"]')
-    expect(link, 'нет preload для hero-main').not.toBeNull()
+  it.each([
+    ['hero-car', '(min-width: 1024px) 50vw, 84vw'],
+    ['hero-main', '(min-width: 1024px) 58vw, 100vw'],
+  ])('%s предзагружен с imagesrcset и imagesizes', (name, sizes) => {
+    const link = [...doc.querySelectorAll('link[rel="preload"][as="image"]')].find((l) =>
+      l.getAttribute('imagesrcset')?.includes(`/images/${name}-`),
+    )
+    expect(link, `нет preload для ${name}`).toBeDefined()
     const srcset = link!.getAttribute('imagesrcset') ?? ''
-    for (const w of [640, 1024, 1600]) expect(srcset).toContain(`/images/hero-main-${w}.`)
-    expect(link!.getAttribute('imagesizes')).toBe('(min-width: 1024px) 58vw, 100vw')
+    for (const w of [640, 1024, 1600]) expect(srcset).toContain(`/images/${name}-${w}.`)
+    expect(link!.getAttribute('imagesizes')).toBe(sizes)
   })
 })
 

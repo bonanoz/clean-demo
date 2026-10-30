@@ -18,6 +18,7 @@
 | `coating` | [@zacherynielson](https://unsplash.com/@zacherynielson) | [a man waxing a car in a garage](https://unsplash.com/photos/a-man-waxing-a-car-in-a-garage-CsZjHjFN3N8) |
 | `compare-after` | [@rm_reins](https://unsplash.com/@rm_reins) | [a dark green porsche sports car with gold wheels](https://unsplash.com/photos/a-dark-green-porsche-sports-car-with-gold-wheels-PeuL7OJb4MA) |
 | `compare-before` | — | сделано из `compare-after`: приглушённый цвет, пыль, брызги грязи и следы капель нарисованы скриптом на Pillow. Настоящего снимка «до» нет |
+| `hero-car` | — | сгенерировано в nano banana: Porsche 911 (992) Cabriolet сверху, кузов тёмно-зелёный, фон прозрачный. Поля обрезаны скриптом, файл нарезан в AVIF и WebP с альфа-каналом |
 | `booking-car` | [@redcharlie](https://unsplash.com/@redcharlie) | [silver porsche 911 turbo s parked](https://unsplash.com/photos/silver-porsche-911-turbo-s-parked-t8kgpZYWRUE) |
 
 ## Шрифты
