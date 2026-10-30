@@ -271,7 +271,7 @@ export const serviceGroups = [
 |---|---|---|---|---|---|---|---|
 | E0 | Каркас, тестовый раннер, шрифты | 0 | — | `package.json`, конфиги, `src/main.tsx`, `src/test/setup.ts`, `src/lib/utils.ts`, `src/components/ui/*`, `public/fonts/*` | оркестратор | done | feat/carwash-demo |
 | E1 | Дизайн-система, типографика, примитивы движения, шапка, сборка страницы | 1 | E0 | `index.html`, `src/index.css`, `src/App.tsx`, `src/lib/{format,typo,use-in-view}.ts`, `src/data/{site,services}.ts`, `src/components/kit/*`, `public/favicon.svg`, `src/sections/Header.tsx`, заглушки остальных `src/sections/*.tsx` | opus | todo | |
-| E2 | Фото с Unsplash, AVIF/WebP, манифест | 1 | E0 | `public/images/*`, `src/data/images.ts`, `docs/CREDITS.md` | оркестратор (браузер и отбор глазами) | todo | |
+| E2 | Фото с Unsplash, AVIF/WebP, манифест | 1 | E0 | `public/images/*`, `src/data/images.ts`, `docs/CREDITS.md` | оркестратор (браузер и отбор глазами) | done | feat/carwash-demo |
 | E3 | Hero и «О нас» | 2 | E1, E2 | `src/sections/Hero.tsx`, `src/sections/About.tsx` | sonnet | todo | |
 | E4 | Услуги и калькулятор | 2 | E1, E2 | `src/sections/Services.tsx`, `src/sections/Calculator.tsx`, `src/lib/price.ts` | sonnet | todo | |
 | E5 | Запись и подвал | 2 | E1, E2 | `src/sections/Booking.tsx`, `src/sections/Footer.tsx`, `src/lib/booking.ts` | sonnet | todo | |
@@ -418,3 +418,23 @@ export const serviceGroups = [
 - 2026-10-30 spec создан
 - 2026-10-30 по просьбе пользователя: упор на типографику, анимации по скиллам Эмиля Ковальски и оптимизацию; GSAP и fontsource-пакеты убраны, шрифты самохостятся, фото в AVIF/WebP с srcset
 - 2026-10-30 E0 готов: каркас, раннер, шрифты (6 woff2, 159 КБ). npm install требует legacy-peer-deps (в .npmrc) из-за peer-конфликта Babel. Бюджет JS поднят до 100 КБ: пустой каркас весит 68,6 КБ gzip
+- 2026-10-30 E2 готов: 13 фото, 78 файлов, 4,5 МБ всего; hero-main-1024.avif — 39 КБ. compare-before нарисован из compare-after (реальной пары на Unsplash нет), hero-wheel — рука с щёткой у диска вместо кропа того же 911
+- 2026-10-30 тест-райтер добавил devDependency @testing-library/dom (peer Testing Library, не ставится сам из-за legacy-peer-deps) — принято в зону E0
+
+## Интерфейсы, уточнённые тестами (обязательны)
+
+- `npm run build` проверяет типы без тест-файлов (`tsconfig.json` → `exclude`): вызовы из тестов в чужие ещё не написанные модули не ломают сборку эпика.
+- Помощники тестов — `src/test/helpers.ts` (`norm`, `nameIs`, `looseShortWords`, `expectTypoApplied` …). Цены и тексты сравниваются с точностью до неразрывных пробелов.
+- `SectionHeading({ label: string; title: string; id: string; className? })` — `MonoLabel` + h2 через `SplitWords` с этим `id`.
+- `Photo`: `sizes` на обоих `source`; AVIF-`source` раньше WebP, `img` последний; у не-priority `decoding="async"` и `loading="lazy"`.
+- `Reveal` с `index > 0`: inline `transition-delay` содержит `--stagger` и число, например `calc(var(--stagger) * 2)`.
+- Header: `<header>` (роль banner); бургер — единственная кнопка с `aria-expanded`, у неё есть доступное имя; Escape закрывает меню и когда фокус на ссылке меню. «К содержимому» (`href="#main"`) — первый фокусируемый элемент страницы (в Header или App).
+- `index.html` проверяется тестом: `lang="ru"`, meta description, theme-color, OG, favicon, `preload` двух шрифтов (Unbounded cyrillic, Geist cyrillic) и `hero-main` (`imagesrcset`).
+- `src/index.css` проверяется текстом: токены `--ink-0…` и `--color-ink-0…` в `@theme`, `--text-h1…`, `--section-y`, `--ease-*`, `--dur-*`, `--stagger`, `@font-face` с фолбэками, `font-synthesis: none`, правило `[data-reveal]` только внутри `@media (prefers-reduced-motion: no-preference)`.
+- Calculator: `<output aria-live="polite">`; подпись — текст, начинающийся с «Итого»; радио и чекбоксы находятся `getByLabelText` по подстроке названия. `output` может пересоздаваться при смене значения.
+- Services: каждая группа — карточка, где вместе заголовок, `formatRub(min)` и `formatRub(max)`; зелёная панель — элемент с классом `bg-sage` со всеми 6 пунктами; у карточек кузова и защиты ссылка «Записаться» → `#booking`.
+- Booking: подписи полей содержат (без учёта регистра) `имя`, `телефон`, `услуг`, `класс машины`, `дата`, `время`, `комментарий`; согласие — единственный checkbox секции; отправка — `button type="submit"`; у формы `noValidate`; селекты стартуют с `value=""`, значения option — id услуги / класса / слот; ошибка — в элементе, на который указывает `aria-describedby`; фокус — на первое поле с ошибкой в порядке DOM; в подтверждении дата видна как `31.10`, `31 октября` или `2026-10-31`, время — как `10:00`; подтверждение `role="status"` с кнопкой «Записаться ещё раз».
+- Footer: `<footer id="contacts">`; год считается при рендере; не меньше 6 якорных ссылок на разделы.
+- CompareSlider: один слой с inline `clip-path: inset(0 X% 0 0)`, где X — значение или 100 − значение; у корня inline `touch-action: pan-y` или класс `touch-pan-y`; pointer-события на элементе `role="slider"` всплывают к обработчику, вызывается `setPointerCapture`, значение считается из `getBoundingClientRect`; подсказка — `Element.prototype.animate` с `duration: 1400`, только без reduce.
+- Reviews: «Оценка N из 5» — `aria-label` или текст листового элемента в карточке отзыва.
+- `typo` проверяется на пунктах услуг, отзывах, вопросах и ответах FAQ: после слова из 1–2 русских букв нет обычного пробела.
