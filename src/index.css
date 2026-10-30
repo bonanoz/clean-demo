@@ -636,3 +636,66 @@
 }
 
 /* ---------- Hero: машина поверх заголовка ---------- */
+
+/* Размеры машины: ширина совпадает с sizes у Photo (84vw, от 1024 px — 50vw, но не шире 45rem),
+   высота — по пропорциям файла 1600×755. Зазор между строками h1 считается от высоты машины:
+   она заезжает на --car-dip (в em от кегля заголовка) на буквы сверху и снизу. 0,13em — поля
+   строчных боксов Unbounded: от базовой линии до низа бокса и от верха бокса до верха капители. */
+.hero-stage {
+  --car-w: 84vw;
+  --car-h: calc(var(--car-w) * 755 / 1600);
+  --car-dip: 0.2em;
+}
+@media (min-width: 64rem) {
+  .hero-stage {
+    --car-w: min(50vw, 45rem);
+    --car-dip: 0.285em;
+  }
+}
+.hero-title {
+  row-gap: calc(var(--car-h) - 2 * var(--car-dip) - 0.13em);
+}
+/* Брови у Й поднимаются на 0,155em над боксом строки, а маска слова даёт сверху 0,1em: расширяем её. */
+.hero-title .split-word {
+  padding-top: 0.2em;
+  margin-top: -0.2em;
+}
+.hero-car-drift {
+  width: var(--car-w);
+}
+/* Тень вырезанного силуэта: filter, а не box-shadow, и цвет из токена. */
+.hero-car img {
+  filter: drop-shadow(0 1.25rem 1.5rem color-mix(in srgb, var(--ink-0) 75%, transparent));
+}
+/* От 1024 px карточки стоят в зазоре слева и справа от машины и не заходят на неё. */
+@media (min-width: 64rem) {
+  .hero-fact {
+    width: min(15rem, calc((100% - var(--car-w)) / 2 - 1rem));
+  }
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  /* Въезд: translate на img, без opacity, чтобы не откладывать LCP. Старт после слов h1. */
+  .hero-car img {
+    transition: translate var(--dur-clip) var(--ease-out) var(--dur-ui);
+  }
+  @starting-style {
+    .hero-car img {
+      translate: 8% 0;
+    }
+  }
+  /* Дрейф: машина уходит вверх быстрее текста. На обёртке, чтобы не спорить с въездом на img. */
+  @supports (animation-timeline: scroll()) {
+    .hero-car-drift {
+      animation: hero-car-drift linear both;
+      animation-timeline: scroll(root);
+      animation-range: 0 100vh;
+    }
+  }
+}
+
+@keyframes hero-car-drift {
+  to {
+    translate: 0 -8vh;
+  }
+}
