@@ -29,7 +29,7 @@ export function Hero() {
           <SplitWords
             as="h1"
             id="hero-title"
-            text="Заводской блеск"
+            text={'Как из\nсалона'}
             className="hero-title type-display flex flex-col items-start [&>.split-word:first-child]:text-sage-bright [&>.split-word:last-child]:self-center [&>.split-word:last-child]:text-ghost"
           />
           {/* Машина не ловит указатель и лежит над строками h1. Дрейф — на обёртке, въезд — на img. */}

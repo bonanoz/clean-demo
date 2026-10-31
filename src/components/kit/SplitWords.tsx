@@ -11,10 +11,11 @@ type SplitWordsProps = {
 /**
  * Заголовок, где каждое слово лежит в своей маске. У h1 слова выезжают снизу при первом
  * показе (@starting-style в index.css), h2 появляются целиком через Reveal.
- * Слова, склеенные typo() неразрывным пробелом, едут одной маской.
+ * Слова, склеенные typo() неразрывным пробелом, едут одной маской. Перевод строки в text
+ * задаёт маски вручную: каждая строка — одна маска, typo() внутри неё.
  */
 export function SplitWords({ as: Tag = 'h2', text, className, id }: SplitWordsProps) {
-  const words = typo(text).split(' ')
+  const words = text.includes('\n') ? text.split('\n').map(typo) : typo(text).split(' ')
   return (
     <Tag id={id} className={className} data-split="">
       {words.map((word, i) => (

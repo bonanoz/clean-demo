@@ -148,9 +148,9 @@
   --danger: #f0786b;
 
   /* Шкала: плавно между 360 и 1440 px. Межстрочный, трекинг и вес — в утилитах type-*. */
-  /* Display в hero: «ЗАВОДСКОЙ» в Unbounded 700 — 8,47 em минус 0,27 em трекинга — на всю
+  /* Display в hero: «САЛОНА» в Unbounded 700 — 5,75 em минус 0,18 em трекинга — на всю
      ширину shell. 100vw включает полосу прокрутки, поэтому делим с запасом. */
-  --text-display: calc((min(100vw, var(--shell-max)) - 2 * var(--gutter)) / 8.5);
+  --text-display: calc((min(100vw, var(--shell-max)) - 2 * var(--gutter)) / 5.8);
   --text-h1: clamp(2.125rem, 1.4rem + 3.4vw, 4.5rem);
   --text-h2: clamp(1.75rem, 1.3rem + 2vw, 3.25rem);
   --text-h3: clamp(1.25rem, 1.1rem + 0.6vw, 1.625rem);

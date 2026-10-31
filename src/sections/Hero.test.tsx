@@ -11,11 +11,11 @@ function renderHero() {
 }
 
 describe('E3: Hero', () => {
-  it('ровно один h1 «Заводской блеск», «Вернём машине заводской блеск» — в лиде', () => {
+  it('ровно один h1 «Как из салона», «Вернём машине заводской блеск» — в лиде', () => {
     const hero = renderHero()
     const h1s = within(hero).getAllByRole('heading', { level: 1 })
     expect(h1s).toHaveLength(1)
-    expect(within(hero).getByRole('heading', { level: 1, name: nameIs('Заводской блеск') })).toBe(h1s[0])
+    expect(within(hero).getByRole('heading', { level: 1, name: nameIs('Как из салона') })).toBe(h1s[0])
     expect(hero).toHaveTextContent(/Вернём машине заводской блеск/)
   })
 
