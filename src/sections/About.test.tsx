@@ -27,10 +27,10 @@ describe('E3: About', () => {
     expectTypoApplied(about, 'Чтобы машина выглядела как из салона — clean.cars')
   })
 
-  it('карточка-папка «Профессиональная химия и оборудование»', () => {
+  it('карточка-папка «Химия под каждый материал»', () => {
     const about = renderAbout()
-    expect(about).toHaveTextContent('Профессиональная химия и оборудование')
-    expectTypoApplied(about, 'Профессиональная химия и оборудование')
+    expect(about).toHaveTextContent('Химия под каждый материал')
+    expectTypoApplied(about, 'Химия под каждый материал')
   })
 
   it('карточка «Безопасно для лака» со ссылкой «Подробнее» на #services', () => {

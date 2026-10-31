@@ -84,7 +84,7 @@ export function Services() {
           className="type-small inline-flex w-fit items-center gap-2 rounded-full border border-line bg-ink-2 px-4 py-2 text-fog"
         >
           <span aria-hidden="true" className="size-2 rounded-full bg-sage-bright" />
-          {typo('1 500+ довольных клиентов')}
+          {typo('1 500+ клиентов')}
         </Reveal>
       </div>
 

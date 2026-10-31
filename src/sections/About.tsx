@@ -27,7 +27,7 @@ export function About() {
           <NotchCard className="hover-lift flex h-full min-h-72 flex-col justify-between gap-8 p-6 pt-12 lg:min-h-[26rem] lg:px-8">
             <MonoLabel>[01] / ХИМИЯ И ОБОРУДОВАНИЕ</MonoLabel>
             <div className="flex flex-col gap-4">
-              <h3 className="type-h3">{typo('Профессиональная химия и оборудование')}</h3>
+              <h3 className="type-h3">{typo('Химия под каждый материал')}</h3>
               <p className="type-body text-fog">
                 {typo(
                   'Состав подбираем под материал: отдельно для лака, кожи и пластика. Полируем машинками и защищаем керамикой.',

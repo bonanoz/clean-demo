@@ -28,10 +28,10 @@ function groupCard(section: HTMLElement, group: (typeof serviceGroups)[number]) 
 }
 
 describe('E4: Services', () => {
-  it('h2 «От мойки кузова до полного детейлинга» и бейдж «1 500+ довольных клиентов»', () => {
+  it('h2 «От мойки кузова до полного детейлинга» и бейдж «1 500+ клиентов»', () => {
     const section = renderServices()
     expect(within(section).getByRole('heading', { level: 2, name: nameIs('От мойки кузова до полного детейлинга') })).toBeInTheDocument()
-    expect(section).toHaveTextContent('1 500+ довольных клиентов')
+    expect(section).toHaveTextContent('1 500+ клиентов')
   })
 
   it('три группы с заголовками из serviceGroups', () => {
