@@ -292,7 +292,6 @@
   #root {
     overflow-x: clip;
   }
-
   h1,
   h2,
   h3 {
@@ -308,8 +307,9 @@
   dd,
   blockquote,
   figcaption {
+    /* Без hyphens: auto — перенос по словарю на всех абзацах занимал ~275 мс главного потока
+       на телефоне (Lighthouse, CPU ×4); колонки достаточно широкие для русских слов целиком. */
     text-wrap: pretty;
-    hyphens: auto;
   }
 
   /* ≈ 60 знаков Geist */

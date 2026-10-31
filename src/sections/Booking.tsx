@@ -64,7 +64,9 @@ export function Booking() {
     if (sent) statusRef.current?.focus()
   }, [sent])
 
-  const { min, max } = dateBounds(new Date())
+  // Границы дат считаются в браузере: в разметке, собранной при сборке, осталась бы дата сборки.
+  const [{ min, max }, setBounds] = useState<{ min?: string; max?: string }>({})
+  useEffect(() => setBounds(dateBounds(new Date())), [])
 
   // aria-required — у всех полей, кроме комментария; aria-invalid и ссылка на текст ошибки — только у поля с ошибкой.
   const aria = (name: keyof BookingValues) => ({

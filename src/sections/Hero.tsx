@@ -87,7 +87,6 @@ export function Hero() {
               name="hero-main"
               alt="Тёмно-зелёный спорткар с золотистыми дисками на мокром асфальте"
               sizes="(min-width: 1024px) 58vw, 100vw"
-              priority
               className="parallax size-full object-cover"
             />
           </div>

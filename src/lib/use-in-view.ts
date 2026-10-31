@@ -11,11 +11,16 @@ export function useInView<T extends Element>({
   rootMargin,
 }: { once?: boolean; rootMargin?: string } = {}): [RefObject<T | null>, boolean] {
   const ref = useRef<T>(null)
-  const [inView, setInView] = useState(() => !hasIO())
+  // Старт одинаковый на сервере и в браузере: иначе гидратация оставит data-visible из разметки сборки.
+  const [inView, setInView] = useState(false)
 
   useEffect(() => {
     const el = ref.current
-    if (!el || !hasIO()) return
+    if (!el) return
+    if (!hasIO()) {
+      setInView(true)
+      return
+    }
     const io = new IntersectionObserver(
       (entries, observer) => {
         const visible = entries[entries.length - 1].isIntersecting

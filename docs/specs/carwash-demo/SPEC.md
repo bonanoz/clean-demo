@@ -109,7 +109,7 @@
 
 **Правила:**
 
-- h1–h3: `text-wrap: balance`, без переносов (`hyphens: manual`), но с `overflow-wrap: break-word` на случай узкого экрана. Абзацы: `text-wrap: pretty`, `hyphens: auto` (у `<html>` `lang="ru"`).
+- h1–h3: `text-wrap: balance`, без переносов (`hyphens: manual`), но с `overflow-wrap: break-word` на случай узкого экрана. Абзацы: `text-wrap: pretty`, без `hyphens: auto` — словарный перенос по всей странице стоил ~275 мс главного потока на телефоне (см. журнал 2026-10-31).
 - Длина строки: абзацы не шире 60ch, лид — 46ch.
 - Цены, время, счётчики, телефоны: `font-variant-numeric: tabular-nums lining-nums`.
 - `font-synthesis: none` (никаких поддельных полужирных), `font-kerning: normal`, `-webkit-font-smoothing: antialiased` (светлый текст на тёмном).
@@ -489,3 +489,4 @@ export const serviceGroups = [
 - 2026-10-31 E3 ревью 1: CHANGES (иконка карточки фактов на 320–375 px, метка под вырезом NotchCard, блюр тени 24 px). Решения оркестратора: машина стартует на середине хода слов; лид упоминает и бокс, и выездную мойку, чтобы не спорить с карточкой [01]
 - 2026-10-31 E6 done: 3 круга (FAQ без Radix; кольцо фокуса ручки на тёмном ободке; delay подсказки из --dur-clip с разбором единицы — минификатор пишет .9s)
 - 2026-10-31 E3 done: 2 круга (карточки фактов на узких, метка под вырезом, блюр тени 20 px, --car-ratio из манифеста). Волна 2 влита: 245/245 тестов, JS 94,76 КБ gzip, CSS 10,42 КБ
+- 2026-10-31 сведение, оптимизация. Lighthouse mobile до правок: Performance 89 (simulate), LCP 3,4 с, 87 % — задержка отрисовки. Сделано: (1) HTML собирается при сборке (`src/entry-server.tsx`, `scripts/prerender.mjs`), `main.tsx` — `hydrateRoot`; `useInView` стартует с `false` везде, границы дат формы считаются в эффекте — иначе гидратация оставляла значения сборки; (2) CSS встраивается в `index.html`; (3) `hero-main` без priority и preload — ниже первого экрана и на телефоне, и на 1440×900 (тесты Hero и App поправлены); (4) без `hyphens: auto`; (5) `public/robots.txt`. `content-visibility` пробовали — выигрыша нет, убран. Итог: devtools-замедление — Performance 93, FCP 1,3 с, LCP 1,6 с, TBT 300 мс, CLS 0; simulate — 88 (модель засчитывает в первый кадр все 6 шрифтов, JS и ленивые фото бенто). Accessibility, Best Practices, SEO — 100

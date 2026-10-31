@@ -3,3 +3,4 @@ dist
 .playwright-mcp
 .claude/worktrees
 .vitest
+dist-ssr

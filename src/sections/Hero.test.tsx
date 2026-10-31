@@ -42,10 +42,7 @@ describe('E3: Hero', () => {
   })
 
   // sizes совпадают с preload в index.html, иначе браузер скачает картинку дважды
-  it.each([
-    ['hero-car', '(min-width: 1024px) 50vw, 84vw'],
-    ['hero-main', '(min-width: 1024px) 58vw, 100vw'],
-  ])('%s: fetchpriority="high", не lazy; sizes зафиксирован', (name, sizes) => {
+  it.each([['hero-car', '(min-width: 1024px) 50vw, 84vw']])('%s: fetchpriority="high", не lazy; sizes зафиксирован', (name, sizes) => {
     const hero = renderHero()
     const img = hero.querySelector<HTMLImageElement>(`img[src^="/images/${name}-"]`)!
     expect(img).toHaveAttribute('fetchpriority', 'high')
@@ -57,7 +54,7 @@ describe('E3: Hero', () => {
 
   it('остальные фото — loading="lazy", без fetchpriority="high"', () => {
     const hero = renderHero()
-    const first = ['/images/hero-main-', '/images/hero-car-']
+    const first = ['/images/hero-car-']
     const others = [...hero.querySelectorAll('img')].filter((img) => !first.some((p) => img.getAttribute('src')?.startsWith(p)))
     expect(others.length).toBeGreaterThanOrEqual(3)
     for (const img of others) {

@@ -108,10 +108,7 @@ describe('E1: index.html', () => {
     }
   })
 
-  it.each([
-    ['hero-car', '(min-width: 1024px) 50vw, 84vw'],
-    ['hero-main', '(min-width: 1024px) 58vw, 100vw'],
-  ])('%s предзагружен с imagesrcset и imagesizes', (name, sizes) => {
+  it.each([['hero-car', '(min-width: 1024px) 50vw, 84vw']])('%s предзагружен с imagesrcset и imagesizes', (name, sizes) => {
     const link = [...doc.querySelectorAll('link[rel="preload"][as="image"]')].find((l) =>
       l.getAttribute('imagesrcset')?.includes(`/images/${name}-`),
     )
