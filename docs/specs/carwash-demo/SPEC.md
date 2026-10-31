@@ -286,10 +286,10 @@ export const serviceGroups = [
 | E0 | Каркас, тестовый раннер, шрифты | 0 | — | `package.json`, конфиги, `src/main.tsx`, `src/test/setup.ts`, `src/lib/utils.ts`, `src/components/ui/*`, `public/fonts/*` | оркестратор | done | feat/carwash-demo |
 | E1 | Дизайн-система, типографика, примитивы движения, шапка, сборка страницы | 1 | E0 | `index.html`, `src/index.css`, `src/App.tsx`, `src/lib/{format,typo,use-in-view}.ts`, `src/data/{site,services}.ts`, `src/components/kit/*`, `public/favicon.svg`, `src/sections/Header.tsx`, заглушки остальных `src/sections/*.tsx` | opus | done | feat/carwash-demo |
 | E2 | Фото с Unsplash, AVIF/WebP, манифест | 1 | E0 | `public/images/*`, `src/data/images.ts`, `docs/CREDITS.md` | оркестратор (браузер и отбор глазами) | done | feat/carwash-demo |
-| E3 | Hero и «О нас» | 2 | E1, E2 | `src/sections/Hero.tsx`, `src/sections/About.tsx` | sonnet | in_progress | wt/carwash/e3 |
+| E3 | Hero и «О нас» | 2 | E1, E2 | `src/sections/Hero.tsx`, `src/sections/About.tsx` | sonnet | done | feat/carwash-demo |
 | E4 | Услуги и калькулятор | 2 | E1, E2 | `src/sections/Services.tsx`, `src/sections/Calculator.tsx`, `src/lib/price.ts` | sonnet | done | feat/carwash-demo |
 | E5 | Запись и подвал | 2 | E1, E2 | `src/sections/Booking.tsx`, `src/sections/Footer.tsx`, `src/lib/booking.ts` | sonnet | done | feat/carwash-demo |
-| E6 | До/после, отзывы, FAQ | 2 | E1, E2 | `src/sections/BeforeAfter.tsx`, `src/components/compare-slider.tsx`, `src/sections/Reviews.tsx`, `src/data/reviews.ts`, `src/sections/Faq.tsx`, `src/data/faq.ts` | sonnet | in_progress | wt/carwash/e6 |
+| E6 | До/после, отзывы, FAQ | 2 | E1, E2 | `src/sections/BeforeAfter.tsx`, `src/components/compare-slider.tsx`, `src/sections/Reviews.tsx`, `src/data/reviews.ts`, `src/sections/Faq.tsx`, `src/data/faq.ts` | sonnet | done | feat/carwash-demo |
 
 Статусы: `todo` → `in_progress` → `review` → `done` (или `blocked` + причина в журнале).
 
@@ -487,3 +487,5 @@ export const serviceGroups = [
 - 2026-10-31 E5 done: 2 круга ревью (Reveal над формой, tabular-nums, a11y-мелочи). JS после merge 86,10 КБ gzip, CSS 9,01 КБ
 - 2026-10-31 E4 done: 1 круг ревью, APPROVE. Стопка включается при ширине ≥ 1280 и высоте ≥ 800 или ширине ≥ 1024 и высоте ≥ 960 — иначе залипший блок салона не помещается в экран. JS после merge 88,85 КБ gzip, CSS 9,81 КБ. Мелочи ревью (моно у цены в строке, подсказка вне live-региона, скобки в имени группы, Reveal на накладке, alt exterior-foam) — на сведение
 - 2026-10-31 E3 ревью 1: CHANGES (иконка карточки фактов на 320–375 px, метка под вырезом NotchCard, блюр тени 24 px). Решения оркестратора: машина стартует на середине хода слов; лид упоминает и бокс, и выездную мойку, чтобы не спорить с карточкой [01]
+- 2026-10-31 E6 done: 3 круга (FAQ без Radix; кольцо фокуса ручки на тёмном ободке; delay подсказки из --dur-clip с разбором единицы — минификатор пишет .9s)
+- 2026-10-31 E3 done: 2 круга (карточки фактов на узких, метка под вырезом, блюр тени 20 px, --car-ratio из манифеста). Волна 2 влита: 245/245 тестов, JS 94,76 КБ gzip, CSS 10,42 КБ
