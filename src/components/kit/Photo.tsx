@@ -2,7 +2,7 @@ import { images, type ImageName } from '@/data/images'
 
 const widths = [640, 1024, 1600]
 const srcSet = (name: ImageName, ext: 'avif' | 'webp') =>
-  widths.map((w) => `/images/${name}-${w}.${ext} ${w}w`).join(', ')
+  widths.map((w) => `${import.meta.env.BASE_URL}images/${name}-${w}.${ext} ${w}w`).join(', ')
 
 type PhotoProps = {
   name: ImageName
@@ -23,7 +23,7 @@ export function Photo({ name, alt, sizes, width, height, priority = false, class
       <source type="image/avif" srcSet={srcSet(name, 'avif')} sizes={sizes} />
       <source type="image/webp" srcSet={srcSet(name, 'webp')} sizes={sizes} />
       <img
-        src={`/images/${name}-1024.webp`}
+        src={`${import.meta.env.BASE_URL}images/${name}-1024.webp`}
         width={width ?? images[name].width}
         height={height ?? images[name].height}
         alt={alt}

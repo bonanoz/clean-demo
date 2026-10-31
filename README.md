@@ -25,6 +25,10 @@ npm run preview   # раздать dist/ локально
 
 `npm run build` собирает страницу дважды: обычную сборку для браузера и серверную из `src/entry-server.tsx`. Затем `scripts/prerender.mjs` вписывает готовую разметку и CSS в `dist/index.html`, поэтому первый экран рисуется до загрузки JS, а React потом только оживляет страницу (`hydrateRoot` в `src/main.tsx`). Отсюда правило для компонентов: при первом рендере не читать `window`, текущую дату и другое, что в браузере отличается от сборки. Такие значения считаются в `useEffect`.
 
+## Публикация
+
+Сайт выкладывается на GitHub Pages: https://bonanoz.github.io/clean-demo/. Workflow `.github/workflows/pages.yml` на каждый push в `main` прогоняет тесты, собирает `dist/` и публикует его. Сборка и `npm run preview` идут с базовым путём `/clean-demo/` (`base` в `vite.config.ts`), поэтому превью открывается на http://localhost:4173/clean-demo/. Пути к файлам из `public/` в коде строятся от `import.meta.env.BASE_URL`, а не от `/`.
+
 ## Как устроено
 
 - Vite, React 19, TypeScript, Tailwind 4. Из shadcn остались конфиг и `button`, свои компоненты собраны на Tailwind. Библиотек анимации нет.

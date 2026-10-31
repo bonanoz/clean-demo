@@ -7,7 +7,9 @@ import tailwindcss from '@tailwindcss/vite'
 // Файл src/lib/cn-tables.ts генерируется; при конфликте merge — пересобрать: npx cn build --content "src/**/*.{ts,tsx}" -o src/lib/cn-tables.ts
 import { cn } from 'cn/vite'
 
-export default defineConfig({
+// GitHub Pages отдаёт сайт из подпапки bonanoz.github.io/clean-demo/; dev и тесты остаются от корня.
+export default defineConfig(({ command, isPreview }) => ({
+  base: command === 'build' || isPreview ? '/clean-demo/' : '/',
   plugins: [react(), tailwindcss(), cn({ content: ['src/**/*.{ts,tsx}'], out: 'src/lib/cn-tables.ts' })],
   resolve: { alias: { '@': resolve(import.meta.dirname, 'src') } },
   test: {
@@ -16,4 +18,4 @@ export default defineConfig({
     setupFiles: ['src/test/setup.ts'],
     passWithNoTests: true,
   },
-})
+}))
