@@ -32,8 +32,9 @@ export function CompareSlider({ before, after, beforeAlt, afterAlt, initial = 50
   const top = useRef<HTMLDivElement>(null)
   const handle = useRef<HTMLDivElement>(null)
   const value = useRef(start)
-  // Расстояние от ручки до указателя в момент нажатия, чтобы ручка не прыгала. null — не тянем.
-  const grab = useRef<number | null>(null)
+  // Тянущий указатель: offset — расстояние от ручки до указателя в момент нажатия (ручка не прыгает),
+  // box — размеры шторки, снятые один раз при нажатии. null — не тянем.
+  const grab = useRef<{ id: number; offset: number; box: DOMRect } | null>(null)
   const hint = useRef<Animation[]>([])
 
   const stopHint = () => {
@@ -54,19 +55,19 @@ export function CompareSlider({ before, after, beforeAlt, afterAlt, initial = 50
     if (el.getAttribute('aria-valuenow') !== text) el.setAttribute('aria-valuenow', text)
   }
 
-  const valueAt = (clientX: number) => {
-    const rect = rootRef.current!.getBoundingClientRect()
-    return ((clientX - rect.left) / rect.width) * 100
-  }
+  const valueAt = (clientX: number, box: DOMRect) => ((clientX - box.left) / box.width) * 100
 
   const onPointerDown = (event: PointerEvent<HTMLDivElement>) => {
-    if (event.button !== 0) return
+    // Второй палец или другая кнопка не перехватывают уже начатое перетаскивание.
+    if (event.button !== 0 || grab.current !== null) return
     event.currentTarget.setPointerCapture(event.pointerId)
-    grab.current = value.current - valueAt(event.clientX)
+    const box = rootRef.current!.getBoundingClientRect()
+    grab.current = { id: event.pointerId, offset: value.current - valueAt(event.clientX, box), box }
     stopHint()
   }
   const onPointerMove = (event: PointerEvent<HTMLDivElement>) => {
-    if (grab.current !== null) write(valueAt(event.clientX) + grab.current)
+    const drag = grab.current
+    if (drag?.id === event.pointerId) write(valueAt(event.clientX, drag.box) + drag.offset)
   }
   const onPointerUp = (event: PointerEvent<HTMLDivElement>) => {
     onPointerMove(event)
@@ -88,10 +89,12 @@ export function CompareSlider({ before, after, beforeAlt, afterAlt, initial = 50
     if (!seen || window.matchMedia('(prefers-reduced-motion: reduce)').matches) return
     const v = value.current
     const stops = [v, clamp(v - 20), clamp(v + 20), v]
-    // Кривая из токена; запасное значение — --ease-in-out из SPEC.md, если токен не отдался.
-    const easing = getComputedStyle(rootRef.current!).getPropertyValue('--ease-in-out').trim() || 'cubic-bezier(0.77, 0, 0.175, 1)'
-    // delay 900: ждём, пока Reveal variant="clip" (--dur-clip) раскроет фото.
-    const timing = { duration: 1400, delay: 900 }
+    const tokens = getComputedStyle(rootRef.current!)
+    // WAAPI не принимает var() в easing, поэтому читаем токен. Без него (jsdom) остаётся встроенная кривая.
+    const easing = tokens.getPropertyValue('--ease-in-out').trim() || 'ease-in-out'
+    // Ждём, пока Reveal variant="clip" раскроет фото: --dur-clip, токен записан в ms.
+    const delay = parseFloat(tokens.getPropertyValue('--dur-clip')) || 0
+    const timing = { duration: 1400, delay }
     hint.current = [
       top.current!.animate(stops.map((s) => ({ clipPath: clipAt(s), easing })), timing),
       handle.current!.animate(stops.map((s) => ({ transform: moveTo(s), easing })), timing),
@@ -129,7 +132,8 @@ export function CompareSlider({ before, after, beforeAlt, afterAlt, initial = 50
         className="group absolute inset-y-0 left-0 w-11 cursor-ew-resize outline-none"
       >
         <span className="absolute inset-y-0 left-1/2 w-0.5 -translate-x-1/2 bg-paper" />
-        <span className="absolute top-1/2 left-1/2 grid size-11 -translate-x-1/2 -translate-y-1/2 place-items-center rounded-full bg-paper text-ink-0 group-focus-visible:outline-2 group-focus-visible:outline-offset-2 group-focus-visible:outline-sage-bright">
+        {/* Тёмный ободок под кольцом фокуса: по светлым местам фото --sage-bright один не дотягивает до 3:1 */}
+        <span className="absolute top-1/2 left-1/2 grid size-11 -translate-x-1/2 -translate-y-1/2 place-items-center rounded-full bg-paper text-ink-0 group-focus-visible:shadow-[0_0_0_6px_var(--ink-0)] group-focus-visible:outline-2 group-focus-visible:outline-offset-2 group-focus-visible:outline-sage-bright">
           <ChevronsLeftRight aria-hidden="true" className="size-5" strokeWidth={1.75} />
         </span>
       </div>

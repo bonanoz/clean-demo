@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useId, useState } from 'react'
 import { Minus, Phone, Plus } from 'lucide-react'
 import { Reveal } from '@/components/kit/Reveal'
 import { SectionHeading } from '@/components/kit/SectionHeading'
@@ -14,6 +14,7 @@ const panel =
 
 export function Faq() {
   const [open, setOpen] = useState<number | null>(null)
+  const uid = useId()
 
   return (
     <section id="faq" aria-labelledby="faq-title" className="shell py-(--section-y)">
@@ -34,9 +35,9 @@ export function Faq() {
                 <h3>
                   <button
                     type="button"
-                    id={`faq-q${i}`}
+                    id={`${uid}-q${i}`}
                     aria-expanded={isOpen}
-                    aria-controls={`faq-a${i}`}
+                    aria-controls={`${uid}-a${i}`}
                     onClick={() => setOpen(isOpen ? null : i)}
                     className="group flex w-full items-center justify-between gap-6 rounded-lg py-6 text-left transition-colors hover:text-sage-bright"
                   >
@@ -45,7 +46,7 @@ export function Faq() {
                     <Minus aria-hidden="true" className="hidden size-5 shrink-0 text-fog group-aria-expanded:block" strokeWidth={1.75} />
                   </button>
                 </h3>
-                <div id={`faq-a${i}`} role="region" aria-labelledby={`faq-q${i}`} hidden={!isOpen} className={panel}>
+                <div id={`${uid}-a${i}`} role="region" aria-labelledby={`${uid}-q${i}`} hidden={!isOpen} className={panel}>
                   <p className="type-body pb-6 text-fog">{typo(item.a)}</p>
                 </div>
               </div>
