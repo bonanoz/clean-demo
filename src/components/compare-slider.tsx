@@ -69,9 +69,13 @@ export function CompareSlider({ before, after, beforeAlt, afterAlt, initial = 50
     const drag = grab.current
     if (drag?.id === event.pointerId) write(valueAt(event.clientX, drag.box) + drag.offset)
   }
+  // Отпущенный или оборванный второй палец не должен прерывать перетаскивание первого.
+  const endDrag = (event: PointerEvent<HTMLDivElement>) => {
+    if (grab.current?.id === event.pointerId) grab.current = null
+  }
   const onPointerUp = (event: PointerEvent<HTMLDivElement>) => {
     onPointerMove(event)
-    grab.current = null
+    endDrag(event)
   }
 
   const onKeyDown = (event: KeyboardEvent<HTMLDivElement>) => {
@@ -92,8 +96,10 @@ export function CompareSlider({ before, after, beforeAlt, afterAlt, initial = 50
     const tokens = getComputedStyle(rootRef.current!)
     // WAAPI не принимает var() в easing, поэтому читаем токен. Без него (jsdom) остаётся встроенная кривая.
     const easing = tokens.getPropertyValue('--ease-in-out').trim() || 'ease-in-out'
-    // Ждём, пока Reveal variant="clip" раскроет фото: --dur-clip, токен записан в ms.
-    const delay = parseFloat(tokens.getPropertyValue('--dur-clip')) || 0
+    // Ждём, пока Reveal variant="clip" раскроет фото: --dur-clip. Единицу разбираем сами:
+    // исходник пишет 900ms, а минификатор в сборке превращает его в .9s.
+    const raw = tokens.getPropertyValue('--dur-clip').trim()
+    const delay = parseFloat(raw) * (raw.endsWith('ms') ? 1 : 1000) || 0
     const timing = { duration: 1400, delay }
     hint.current = [
       top.current!.animate(stops.map((s) => ({ clipPath: clipAt(s), easing })), timing),
@@ -128,7 +134,7 @@ export function CompareSlider({ before, after, beforeAlt, afterAlt, initial = 50
         onPointerDown={onPointerDown}
         onPointerMove={onPointerMove}
         onPointerUp={onPointerUp}
-        onPointerCancel={() => (grab.current = null)}
+        onPointerCancel={endDrag}
         className="group absolute inset-y-0 left-0 w-11 cursor-ew-resize outline-none"
       >
         <span className="absolute inset-y-0 left-1/2 w-0.5 -translate-x-1/2 bg-paper" />
