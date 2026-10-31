@@ -2,7 +2,7 @@
 
 ## Фото
 
-Фото, кроме `hero-car` и `compare-before`, — с [Unsplash](https://unsplash.com) по [лицензии Unsplash](https://unsplash.com/license): бесплатно для коммерческого и некоммерческого использования, указывать автора не обязательно. Исходники обрезаны и пережаты в AVIF и WebP (640, 1024, 1600 px по ширине).
+Фото, кроме `hero-car`, `compare-before` и `compare-after`, — с [Unsplash](https://unsplash.com) по [лицензии Unsplash](https://unsplash.com/license): бесплатно для коммерческого и некоммерческого использования, указывать автора не обязательно. Исходники обрезаны и пережаты в AVIF и WebP (640, 1024, 1600 px по ширине).
 
 | Файл | Автор | Страница фото |
 |---|---|---|
@@ -16,9 +16,9 @@
 | `interior-cleaning` | [@luaybarani](https://unsplash.com/@luaybarani) | [mechanic working on car interior dashboard](https://unsplash.com/photos/mechanic-working-on-car-interior-dashboard-kSaVTbId4bE) |
 | `exterior-foam` | [@andredantan19](https://unsplash.com/@andredantan19) | [sports car washing in garage](https://unsplash.com/photos/sports-car-washing-in-garage-pRppMPh4Zho) |
 | `coating` | [@zacherynielson](https://unsplash.com/@zacherynielson) | [a man waxing a car in a garage](https://unsplash.com/photos/a-man-waxing-a-car-in-a-garage-CsZjHjFN3N8) |
-| `compare-after` | [@rm_reins](https://unsplash.com/@rm_reins) | [a dark green porsche sports car with gold wheels](https://unsplash.com/photos/a-dark-green-porsche-sports-car-with-gold-wheels-PeuL7OJb4MA) |
-| `compare-before` | — | сделано из `compare-after`: приглушённый цвет, пыль, брызги грязи и следы капель нарисованы скриптом на Pillow. Настоящего снимка «до» нет |
 | `hero-car` | — | сгенерировано в nano banana: Porsche 911 (992) Cabriolet сверху, кузов тёмно-зелёный, фон прозрачный. Поля обрезаны скриптом, файл нарезан в AVIF и WebP с альфа-каналом |
+| `compare-after` | — | сгенерировано в nano banana: тёмно-зелёный Porsche 911 в тёмном боксе, чистый |
+| `compare-before` | — | сгенерировано в nano banana из `compare-after`: тот же кадр, грязный. Значок генератора в правом нижнем углу закрыт куском пола |
 | `booking-car` | [@redcharlie](https://unsplash.com/@redcharlie) | [silver porsche 911 turbo s parked](https://unsplash.com/photos/silver-porsche-911-turbo-s-parked-t8kgpZYWRUE) |
 
 ## Шрифты

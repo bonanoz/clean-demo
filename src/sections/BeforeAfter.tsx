@@ -17,8 +17,8 @@ export function BeforeAfter() {
           <CompareSlider
             before="compare-before"
             after="compare-after"
-            beforeAlt="Porsche 911 до мойки: лак тусклый, на кузове и диске грязь и разводы"
-            afterAlt="Тот же Porsche 911 после мойки: тёмно-зелёный лак блестит, диск чистый"
+            beforeAlt="Тёмно-зелёный Porsche 911 до мойки: брызги грязи на капоте и крыле, глина на шинах и дисках"
+            afterAlt="Тот же Porsche 911 после мойки: лак блестит, золотистые диски и шины чистые"
           />
         </Reveal>
       </div>

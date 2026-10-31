@@ -54,4 +54,4 @@ npm run preview   # раздать dist/ локально
 
 ## Фото и шрифты
 
-Авторы и лицензии — в [docs/CREDITS.md](docs/CREDITS.md). Коротко: фото с Unsplash, машина на первом экране сгенерирована в nano banana, «грязная» половина слайдера нарисована скриптом поверх чистого снимка, шрифты под SIL Open Font License.
+Авторы и лицензии — в [docs/CREDITS.md](docs/CREDITS.md). Коротко: фото с Unsplash, машина на первом экране и пара для слайдера «до/после» сгенерированы в nano banana, шрифты под SIL Open Font License.
