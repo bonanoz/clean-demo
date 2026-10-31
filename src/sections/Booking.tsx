@@ -166,7 +166,7 @@ export function Booking() {
                 noValidate
                 onSubmit={onSubmit}
                 onChange={clearError}
-                className="grid gap-5 rounded-card border border-line bg-ink-2 p-6 sm:grid-cols-2 sm:p-8"
+                className="grid grid-cols-1 gap-5 rounded-card border border-line bg-ink-2 p-6 sm:grid-cols-2 sm:p-8"
               >
                 <Field name="name" label="Имя" error={errors.name}>
                   <input
@@ -211,7 +211,16 @@ export function Booking() {
                   />
                 </Field>
                 <Field name="date" label="Дата" error={errors.date}>
-                  <input id="booking-date" name="date" type="date" min={min} max={max} className={input} {...aria('date')} />
+                  {/* iOS Safari даёт полю даты свою ширину и центрирует текст: снимаем нативный вид и прижимаем значение влево. */}
+                  <input
+                    id="booking-date"
+                    name="date"
+                    type="date"
+                    min={min}
+                    max={max}
+                    className={cn(input, 'min-w-0 appearance-none [&::-webkit-date-and-time-value]:text-left')}
+                    {...aria('date')}
+                  />
                 </Field>
                 <Field name="time" label="Время" error={errors.time}>
                   <Select
