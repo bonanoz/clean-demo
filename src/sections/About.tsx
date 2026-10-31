@@ -4,7 +4,6 @@ import { NotchCard } from '@/components/kit/NotchCard'
 import { Photo } from '@/components/kit/Photo'
 import { Reveal } from '@/components/kit/Reveal'
 import { SectionHeading } from '@/components/kit/SectionHeading'
-import { serviceGroups } from '@/data/services'
 import { typo } from '@/lib/typo'
 
 export function About() {
@@ -31,7 +30,7 @@ export function About() {
               <h3 className="type-h3">{typo('Профессиональная химия и оборудование')}</h3>
               <p className="type-body text-fog">
                 {typo(
-                  'Состав подбираем под материал: отдельно для лака, кожи и пластика. Полируем машинками, сушим микрофиброй, защищаем керамикой.',
+                  'Состав подбираем под материал: отдельно для лака, кожи и пластика. Полируем машинками и защищаем керамикой.',
                 )}
               </p>
             </div>
@@ -46,7 +45,9 @@ export function About() {
             </div>
             <div className="flex flex-col gap-4">
               <h3 className="type-h3">{typo('Безопасно для лака')}</h3>
-              <p className="type-body text-fog">{typo(serviceGroups[1].description)}</p>
+              <p className="type-body text-fog">
+                {typo('Предмойка без касания, мойка двумя вёдрами и сушка микрофиброй: песок и грязь не царапают лак.')}
+              </p>
               <a href="#services" className="type-ui -mt-1 inline-flex min-h-11 items-center gap-1.5 self-start text-sage-bright">
                 Подробнее
                 <ArrowUpRight aria-hidden="true" className="size-4" strokeWidth={1.75} />

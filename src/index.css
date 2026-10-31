@@ -683,12 +683,12 @@
 /* ---------- Hero: машина поверх заголовка ---------- */
 
 /* Размеры машины: ширина совпадает с sizes у Photo (84vw, от 1024 px — 50vw, но не шире 45rem),
-   высота — по пропорциям файла 1600×755. Зазор между строками h1 считается от высоты машины:
+   высота — по пропорциям файла (--car-ratio приходит из манифеста images через style в Hero.tsx). Зазор между строками h1 считается от высоты машины:
    она заезжает на --car-dip (в em от кегля заголовка) на буквы сверху и снизу. 0,13em — поля
    строчных боксов Unbounded: от базовой линии до низа бокса и от верха бокса до верха капители. */
 .hero-stage {
   --car-w: 84vw;
-  --car-h: calc(var(--car-w) * 755 / 1600);
+  --car-h: calc(var(--car-w) / var(--car-ratio));
   --car-dip: 0.2em;
 }
 @media (min-width: 64rem) {
@@ -710,7 +710,7 @@
 }
 /* Тень вырезанного силуэта: filter, а не box-shadow, и цвет из токена. */
 .hero-car img {
-  filter: drop-shadow(0 1.25rem 1.5rem color-mix(in srgb, var(--ink-0) 75%, transparent));
+  filter: drop-shadow(0 1rem 1.25rem color-mix(in srgb, var(--ink-0) 75%, transparent));
 }
 /* От 1024 px карточки стоят в зазоре слева и справа от машины и не заходят на неё. */
 @media (min-width: 64rem) {
@@ -720,9 +720,9 @@
 }
 
 @media (prefers-reduced-motion: no-preference) {
-  /* Въезд: translate на img, без opacity, чтобы не откладывать LCP. Старт после слов h1. */
+  /* Въезд: translate на img, без opacity, чтобы не откладывать LCP. Старт на середине хода слов h1. */
   .hero-car img {
-    transition: translate var(--dur-clip) var(--ease-out) var(--dur-ui);
+    transition: translate var(--dur-clip) var(--ease-out) calc(var(--dur-reveal) / 2);
   }
   @starting-style {
     .hero-car img {

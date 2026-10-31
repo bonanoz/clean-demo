@@ -1,11 +1,16 @@
+import type { CSSProperties } from 'react'
 import { Truck, Users } from 'lucide-react'
 import { MonoLabel } from '@/components/kit/MonoLabel'
 import { NotchCard } from '@/components/kit/NotchCard'
 import { Photo } from '@/components/kit/Photo'
 import { Reveal } from '@/components/kit/Reveal'
 import { SplitWords } from '@/components/kit/SplitWords'
+import { images } from '@/data/images'
 import { site } from '@/data/site'
 import { typo } from '@/lib/typo'
+
+// Пропорции машины из манифеста: по ним в index.css считается высота и зазор между строками h1.
+const carRatio = images['hero-car'].width / images['hero-car'].height
 
 const facts = [
   { index: '[01]', text: 'Выездная мойка', Icon: Truck },
@@ -19,7 +24,7 @@ const facts = [
 export function Hero() {
   return (
     <section id="hero" aria-labelledby="hero-title" className="shell pt-6 pb-(--section-y) lg:pt-10">
-      <div className="hero-stage grid">
+      <div className="hero-stage grid" style={{ '--car-ratio': carRatio } as CSSProperties}>
         <div className="relative lg:col-start-1 lg:row-start-1">
           <SplitWords
             as="h1"
@@ -42,15 +47,16 @@ export function Hero() {
         </div>
 
         {/* От 1024 px карточки стоят в зазоре между строками по бокам от машины, ниже — под заголовком. */}
-        <ul className="mt-6 grid grid-cols-2 gap-3 lg:pointer-events-none lg:z-10 lg:col-start-1 lg:row-start-1 lg:mt-0 lg:flex lg:items-center lg:justify-between">
+        {/* ul на lg накрывает обе строки h1, поэтому сам не ловит указатель, а карточки — ловят (выделение текста). */}
+        <ul className="mt-6 grid grid-cols-1 gap-3 sm:grid-cols-2 lg:pointer-events-none lg:z-10 lg:col-start-1 lg:row-start-1 lg:mt-0 lg:flex lg:items-center lg:justify-between">
           {facts.map(({ index, text, Icon }, i) => (
-            <Reveal as="li" key={index} index={i + 2} className="hero-fact">
-              <div className="flex h-full items-start justify-between gap-3 rounded-card bg-ink-2 p-4">
-                <div>
+            <Reveal as="li" key={index} index={i + 2} className="hero-fact pointer-events-auto">
+              <div className="h-full rounded-card bg-ink-2 p-4">
+                <div className="flex items-center justify-between gap-3">
                   <MonoLabel className="text-sage-bright">{index}</MonoLabel>
-                  <p className="type-small mt-2 text-paper">{typo(text)}</p>
+                  <Icon aria-hidden="true" className="size-5 shrink-0 text-sage-bright" strokeWidth={1.75} />
                 </div>
-                <Icon aria-hidden="true" className="size-5 shrink-0 text-sage-bright" strokeWidth={1.75} />
+                <p className="type-small mt-2 text-paper">{typo(text)}</p>
               </div>
             </Reveal>
           ))}
@@ -60,7 +66,9 @@ export function Hero() {
       <div className="mt-8 flex flex-col gap-6 lg:mt-12 lg:flex-row lg:items-end lg:justify-between">
         <p className="type-lead text-fog">
           <span className="text-paper">{typo('Вернём машине заводской блеск')}</span>
-          {typo(`: моем кузов вручную, чистим салон, полируем лак и наносим керамику. Ждём по адресу: ${site.address}. ${site.hours}.`)}
+          {typo(
+            `: моем кузов вручную в боксе или на выезде, чистим салон, полируем лак и наносим керамику. Адрес: ${site.address}. ${site.hours}.`,
+          )}
         </p>
         <div className="flex flex-col gap-3 sm:flex-row">
           <a href="#booking" className="btn btn-primary">
@@ -86,8 +94,9 @@ export function Hero() {
         </Reveal>
 
         <Reveal index={1} className="lg:col-start-1 lg:row-start-1">
-          <NotchCard className="hover-lift flex flex-col gap-3 p-3">
-            <MonoLabel className="px-2 pt-1.5">ВНИМАНИЕ К ДЕТАЛЯМ</MonoLabel>
+          {/* Верхний отступ не меньше --notch-h: метка целиком под вырезом, на любой ширине карточки. */}
+          <NotchCard className="hover-lift flex flex-col gap-3 p-3 pt-[calc(var(--notch-h)+0.5rem)]">
+            <MonoLabel className="px-2">ВНИМАНИЕ К ДЕТАЛЯМ</MonoLabel>
             <div className="hover-zoom aspect-[4/3] overflow-hidden rounded-xl lg:aspect-[4/5]">
               <Photo
                 name="hero-wheel"
